@@ -15,10 +15,9 @@
     <div class="box-body no-padding">
         <table class="table table-condensed table-striped">
             <thead>
-
                 <tr>
+                    <th>Transaction Code</th>
                     <th>Order Date</th>
-                    <th>Transction Code</th>
                     <th>Customer</th>
                     <th>Order Type</th>
                     <th class="text-right">Total Amount</th>
@@ -28,8 +27,8 @@
             </thead>
             @forelse($items AS $i)
                 <tr>
+                    <td><a href="{{ route('admin.show.order-details', ['orderId' => $i->id]) }}">{{ $i->transaction_code }}</a></td>
                     <td>{{ date_create($i->created_at)->format('m/d/Y h:i A') }}</td>
-                    <td>{{ $i->transaction_code }}</td>
                     <td>{{ $i->customer->fullname }}</td>
                     <td>{{ $i->order_type }}</td>
                     <td class="text-right">{{ number_format($i->total_amount, 2) }}</td>
@@ -37,12 +36,12 @@
                     <td>
                         @if($i->isNotReceived())
                             @if($i->isSetToBe('delivering'))
-                                <button type="button" data-order-number="{{ $i->id }}" data-toggle="modal" data-target="#assign-delivery-personnel-modal" class="btn btn-default btn-sm">Set: {{ $i->next_status }}</button>
+                                <button type="button" data-order-number="{{ $i->id }}" data-toggle="modal" data-target="#assign-delivery-personnel-modal" class="btn btn-default btn-sm">Set: {{ str_replace('_', ' ', $i->next_status) }}</button>
                             @else
                                 {!! Form::open(['url' => route('admin.update-order-status'), 'method' => 'POST', 'onsubmit' => 'javascript:return confirm(\'Are you sure you want to update this order to: "'.$i->next_status.'?"\')']) !!}
                                     {!! Form::hidden('order_status', $i->next_status) !!}
                                     {!! Form::hidden('id', $i->id) !!}
-                                    <button type="submit" class="btn btn-default btn-sm">Set: {{ $i->next_status }}</button>
+                                    <button type="submit" class="btn btn-default btn-sm">Set: {{ str_replace('_', ' ', $i->next_status) }}</button>
                                 {!! Form::close() !!}
                             @endif
 

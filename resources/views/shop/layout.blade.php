@@ -55,7 +55,7 @@
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ Auth::user()->fullname }} <span class="caret"></span></a>
                             <ul class="dropdown-menu">
                                 <li><a href="#">Profile</a></li>
-                                <li><a href="#">Order History</a></li>
+                                <li><a href="{{ route('customer.show.order-history') }}">Order History</a></li>
                                 <li role="separator" class="divider"></li>
                                 <li>
                                     {!! Form::open(['url' => route('shop.do.logout'), 'method' => 'post', 'id' => 'logout-form']) !!}

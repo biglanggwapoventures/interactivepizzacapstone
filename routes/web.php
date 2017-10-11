@@ -4,7 +4,9 @@ Route::get('/', 'ShopController@showHome');
 
 Auth::routes();
 
-Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function () {
+Route::group(['prefix' => 'admin', 'namespace' => 'Admin', 'middleware' => 'auth'], function () {
+
+    Route::get('/', 'AdminController');
 
     Route::resource('ingredients', 'IngredientsController');
     Route::resource('ingredient-categories', 'IngredientCategoriesController');
@@ -12,6 +14,8 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin'], function () {
     Route::resource('delivery-personnel', 'DeliveryPersonnelController');
 
     Route::get('manage-orders', 'OrdersController@masterList')->name('admin.manage-orders');
+    Route::get('show-order-details/{orderId}', 'OrdersController@showOrderDetails')->name('admin.show.order-details');
+
     Route::post('update-order-status', 'OrdersController@updateStatus')->name('admin.update-order-status');
 
     Route::get('pizza/{pizza}/ingredients/{size}', 'PizzaIngredientsController@showForm')->name('pizza.ingredients.show');
@@ -45,6 +49,11 @@ Route::group(['prefix' => 'shop', 'namespace' => 'Shop'], function () {
     Route::post('confirm-order', 'OrderPizzaController@confirmOrder')->name('shop.do.confirm-order');
 
     Route::get('cart', 'CartController@showCart')->name('shop.show.cart');
+});
+
+Route::group(['middleware' => 'auth'], function () {
+    Route::get('my-order-history', 'CustomerController@showOrderHistory')->name('customer.show.order-history');
+    Route::get('my-order-history/{order}', 'CustomerController@showOrderDetails')->name('customer.show.order-details');
 });
 
 Route::get('session', function () {

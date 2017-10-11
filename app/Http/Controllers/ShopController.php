@@ -6,6 +6,6 @@ class ShopController extends Controller
 {
     public function showHome()
     {
-        return view('shop.home');
+        return redirect(route('shop.show.home'));
     }
 }

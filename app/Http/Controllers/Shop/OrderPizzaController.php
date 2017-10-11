@@ -47,7 +47,7 @@ class OrderPizzaController extends Controller
                 'order_type' => 'required|in:DELIVERY,PICKUP',
                 'recipient' => 'required_if:order_type,PICKUP',
                 'pickup_time' => 'nullable|required_if:order_type,PICKUP|date_format:"h:i A"',
-                'estimated_delivery_time' => 'nullable|required_if:order_type,DELIVERY|date_format:"h:i A"',
+                // 'estimated_delivery_time' => 'nullable|required_if:order_type,DELIVERY|date_format:"h:i A"',
                 'cash_amount' => 'nullable|required_if:order_type,DELIVERY|numeric',
                 'destination_type' => 'nullable|required_if:order_type,DELIVERY|in:CITY_PROPER,OUTSIDE_CITY',
                 'street' => 'required_if:order_type,DELIVERY',
@@ -78,16 +78,17 @@ class OrderPizzaController extends Controller
                     'barangay',
                     'city',
                 ]);
-                $deliveryDetails += [
-                    'estimated_delivery_time' => Carbon::createFromFormat('h:i A', $validated['estimated_delivery_time'])->format('H:i:s'),
-                ];
+                // $deliveryDetails += [
+                //     'estimated_delivery_time' => Carbon::createFromFormat('h:i A', $validated['estimated_delivery_time'])->format('H:i:s'),
+                // ];
                 $order->delivery()->create($deliveryDetails);
             }
             MyCart::savePremadePizzaTo($order);
             MyCart::saveCustomPizzaTo($order);
             MyCart::clear();
         });
-        return response()->json($validated);
+
+        return redirect(route('customer.show.order-history'))->with('messageFromCart', 'A new order has been successully placed!');
     }
 
 }

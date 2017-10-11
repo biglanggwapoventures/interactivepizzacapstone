@@ -85,6 +85,10 @@ class Order extends Model
 
     public function getTotalAmount()
     {
+        if (property_exists($this, 'total_amount')) {
+            return $this->total_amount;
+        }
+
         $premadeTotal = $this->premadePizzaOrderDetails->sum(function ($detail) {
             return $detail->quantity * $detail->pizzaSize->unit_price;
         });
@@ -97,13 +101,28 @@ class Order extends Model
 
         $this->total_amount = $total;
 
-        return $this;
+        return $total;
+    }
+
+    public function totalAmountWithoutVAT()
+    {
+        return $this->getTotalAmount() - $this->getVAT();
+    }
+
+    public function getVAT()
+    {
+        return $this->getTotalAmount() * 0.12;
+    }
+
+    public function scopeDetailed($query)
+    {
+        $query->with(['premadePizzaOrderDetails.pizzaSize.pizza', 'customPizzaOrder.usedIngredients.ingredients', 'customer.profile', 'deliveryPersonnel']);
     }
 
     public function scopePrepForMasterList($query)
     {
         return $query->orderBy('created_at', 'DESC')
-            ->with(['customer', 'premadePizzaOrderDetails.pizzaSize', 'customPizzaOrder.usedIngredients.ingredients'])
+            ->with(['premadePizzaOrderDetails.pizzaSize', 'customPizzaOrder.usedIngredients.ingredients'])
             ->get()
             ->each
             ->getTotalAmount();
@@ -112,5 +131,10 @@ class Order extends Model
     public function scopeOwned($query)
     {
         return $query->whereCustomerId(Auth::id());
+    }
+
+    public function deliveryPersonnel()
+    {
+        return $this->belongsTo('App\DeliveryPersonnel');
     }
 }

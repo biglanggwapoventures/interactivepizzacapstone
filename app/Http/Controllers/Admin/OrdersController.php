@@ -41,10 +41,11 @@ class OrdersController extends Controller
             if ($request->order_status != $order->next_status) {
                 $validator->errors()->add('order_status', 'Cannot set status.');
             } else {
-                $order->order_status = $request->order_status;
                 if ($order->isSetToBe('delivering')) {
+                    // dd($request->delivery_personnel_id);
                     $order->delivery_personnel_id = $request->delivery_personnel_id;
                 }
+                $order->order_status = $request->order_status;
                 $order->save();
                 return redirect()->back();
             }
@@ -54,6 +55,21 @@ class OrdersController extends Controller
             ->back()
             ->withInput()
             ->withErrors($validator);
+    }
+
+    public function showOrderDetails($orderId)
+    {
+        $order = Order::whereId($orderId);
+
+        if (!$order->exists()) {
+            abort(404);
+        }
+
+        $order = $order->detailed()->first();
+
+        return view('admin.view-order', [
+            'order' => $order,
+        ]);
     }
 
 }

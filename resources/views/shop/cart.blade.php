@@ -12,9 +12,6 @@
 
 	<div class="row">
 		<div class="col-md-12">
-			<div class="page-header">
-				<h1><i class="fa fa-shopping-cart"></i>	Cart</h1>
-			</div>
 			@include('shop.cart-message')
 			<div class="row">
 				<div class="col-sm-8">
@@ -93,44 +90,50 @@
 					</div>
 				</div>
 				<div class="col-sm-4">
-					<div class="panel panel-primary">
-						<div class="panel-heading">
-							<h4 class="panel-title">Additional Information</h4>
-						</div>
-						<div class="panel-body">
-							{!! Form::open(['id' => 'order-form', 'url' => route('shop.do.confirm-order')]) !!}
-								{!! Form::bsSelect('order_type', 'Order Type', ['' => '** SELECT AN ORDER TYPE **', 'PICKUP' => 'Pickup', 'DELIVERY' => 'Delivery']) !!}
-								{!! Form::bsText('recipient', 'Recipient', null, ['data-visible' => 'PICKUP']) !!}
-								{!! Form::bsText('pickup_time', 'Pick Time', null, ['data-visible' => 'PICKUP']) !!}
+					@if(Auth::check())
 
-								<hr>
-								<div class="row">
-									<div class="col-sm-6">
-										{!! Form::bsText('estimated_delivery_time', 'Pick Time', null, ['data-visible' => 'DELIVERY']) !!}
+						<div class="panel panel-primary">
+							<div class="panel-heading">
+								<h4 class="panel-title">Additional Information</h4>
+							</div>
+							<div class="panel-body">
+								{!! Form::open(['id' => 'order-form', 'url' => route('shop.do.confirm-order')]) !!}
+									{!! Form::bsSelect('order_type', 'Order Type', ['' => '** SELECT AN ORDER TYPE **', 'PICKUP' => 'Pickup', 'DELIVERY' => 'Delivery']) !!}
+									{!! Form::bsText('recipient', 'Recipient', null, ['data-visible' => 'PICKUP']) !!}
+									{!! Form::bsText('pickup_time', 'Pick Time', null, ['data-visible' => 'PICKUP']) !!}
+
+									<hr>
+									<div class="row">
+										<div class="col-sm-6">
+											{!! Form::bsSelect('destination_type', 'Location', ['' => '** SELECT A LOCATION **', 'CITY_PROPER' => 'City Proper', 'OUTSIDE_CITY' => 'Outside City'], null, ['data-visible' => 'DELIVERY']) !!}
+										</div>
+										<div class="col-sm-6">
+											{!! Form::bsText('cash_amount', 'Cash Amount', null, ['data-visible' => 'DELIVERY']) !!}
+										</div>
 									</div>
-									<div class="col-sm-6">
-										{!! Form::bsText('cash_amount', 'Cash Amount', null, ['data-visible' => 'DELIVERY']) !!}
+
+
+									{!! Form::bsText('street', 'Street Number', Auth::user()->profile->street_number, ['data-visible' => 'DELIVERY']) !!}
+									{!! Form::bsText('barangay', 'Barangay', Auth::user()->profile->barangay, ['data-visible' => 'DELIVERY']) !!}
+									{!! Form::bsText('city', 'City', Auth::user()->profile->city, ['data-visible' => 'DELIVERY']) !!}
+									{!! Form::bsText('landmark', 'Landmark', null, ['data-visible' => 'DELIVERY']) !!}
+									<div class="checkbox">
+										<label>
+											{!! Form::checkbox('agreement', 1, null, ['id' => 'terms-checkbox']) !!}
+											I have read and agreed to the <a data-toggle="modal" data-target="#terms">terms and conditions</a> of {{ config('app.name') }}
+										</label>
 									</div>
-								</div>
 
-								{!! Form::bsSelect('destination_type', 'Location', ['' => '** SELECT A LOCATION **', 'CITY_PROPER' => 'City Proper', 'OUTSIDE_CITY' => 'Outside City'], null, ['data-visible' => 'DELIVERY']) !!}
-								{!! Form::bsText('street', 'Street Number', null, ['data-visible' => 'DELIVERY']) !!}
-								{!! Form::bsText('barangay', 'Barangay', null, ['data-visible' => 'DELIVERY']) !!}
-								{!! Form::bsText('city', 'City', null, ['data-visible' => 'DELIVERY']) !!}
-								{!! Form::bsText('landmark', 'Landmark', null, ['data-visible' => 'DELIVERY']) !!}
-								<div class="checkbox">
-									<label>
-										{!! Form::checkbox('agreement', 1, null, ['id' => 'terms-checkbox']) !!}
-										I have read and agreed to the <a data-toggle="modal" data-target="#terms">terms and conditions</a> of {{ config('app.name') }}
-									</label>
-								</div>
-
-								<button type="submit" class="btn btn-default btn-block"><i class="fa fa-check"></i> Confirm Order!</button>
-
-								@json($errors->all())
-							{!! Form::close() !!}
+									<button type="submit" class="btn btn-default btn-block"><i class="fa fa-check"></i> Confirm Order!</button>
+								{!! Form::close() !!}
+							</div>
 						</div>
-					</div>
+
+					@else
+						<div class="well well-sm text-center">
+							You need to have an account to place an order! If you already have one, click <a href="{{ route('shop.show.login') }}">here</a> to sign in or click <a href="{{ route('shop.show.registration') }}">here</a> to create one.
+						</div>
+					@endif
 				</div>
 			</div>
 		</div>
