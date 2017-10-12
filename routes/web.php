@@ -24,7 +24,7 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin', 'middleware' => 'auth
     Route::get('manage-users', 'UsersController@masterList')->name('admin.manage-users');
     Route::patch('ban-user/{id}', 'UsersController@banUser')->name('admin.ban-user');
     Route::patch('unban-user/{id}', 'UsersController@unbanUser')->name('admin.unban-user');
-    Route::delete('delete-user/{id}', 'UsersController@destroy')->name('admin-destroy-user');
+    Route::delete('delete-user/{id}', 'UsersController@destroy')->name('admin.destroy-user');
 
     Route::post('logout', 'AdminLogoutController')->name('admin.do.logout');
 });

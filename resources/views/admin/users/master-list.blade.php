@@ -54,7 +54,7 @@
                                 {!! Form::close() !!}
                             @endif
 
-                            {!! Form::open(['url' => route('admin-destroy-user', ['id' => $u->id]), 'method' => 'DELETE', 'onsubmit' => 'javascript:return confirm(\'Are you sure?\')']) !!}
+                            {!! Form::open(['url' => route('admin.destroy-user', ['id' => $u->id]), 'method' => 'DELETE', 'onsubmit' => 'javascript:return confirm(\'Are you sure?\')']) !!}
                                 <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i> Delete</button>
                             {!! Form::close() !!}                            
                         </td>
