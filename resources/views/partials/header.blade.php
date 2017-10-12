@@ -113,7 +113,6 @@
 
                             <p>
                                 {{ Auth::user()->fullname }}
-                                <small>Member since Nov. 2012</small>
                             </p>
                         </li>
                         <!-- Menu Body -->
@@ -137,7 +136,9 @@
                                 <a href="#" class="btn btn-default btn-flat">Profile</a>
                             </div>
                             <div class="pull-right">
-                                <a href="#" class="btn btn-default btn-flat">Sign out</a>
+                                {!! Form::open(['url' => route('admin.do.logout'), 'method' => 'post', 'id' => 'logout-form']) !!}
+                                {!! Form::close() !!}
+                                <a class="btn btn-default btn-flat" onclick="javascript:confirm('Are you sure') ? document.getElementById('logout-form').submit() : void(0)">Logout</a>
                             </div>
                         </li>
                     </ul>

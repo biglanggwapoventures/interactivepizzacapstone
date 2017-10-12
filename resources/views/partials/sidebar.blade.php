@@ -47,6 +47,11 @@
                     <i class="fa fa-list-alt"></i> <span>Manage Orders</span>
                 </a>
             </li>
+            <li>
+                <a href="{{ route('admin.manage-users') }}">
+                    <i class="fa fa-users"></i> <span>Manage Users</span>
+                </a>
+            </li>
         </ul>
     </section>
     <!-- /.sidebar -->
