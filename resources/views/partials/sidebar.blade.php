@@ -38,13 +38,13 @@
         <ul class="sidebar-menu" data-widget="tree">
             <li class="header">Tasks</li>
             <li>
-                <a href="#">
-                    <i class="fa fa-list-alt"></i> <span>Stock Adjustments</span>
+                <a href="{{ route('admin.manage-orders') }}">
+                    <i class="fa fa-list-alt"></i> <span>Manage Orders</span>
                 </a>
             </li>
             <li>
-                <a href="{{ route('admin.manage-orders') }}">
-                    <i class="fa fa-list-alt"></i> <span>Manage Orders</span>
+                <a href="{{ route('admin.manage-users') }}">
+                    <i class="fa fa-users"></i> <span>Manage Users</span>
                 </a>
             </li>
         </ul>

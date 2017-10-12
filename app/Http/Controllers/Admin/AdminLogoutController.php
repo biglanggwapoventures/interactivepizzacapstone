@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\Shop;
+namespace App\Http\Controllers\admin;
 
-use App\Http\Controllers\Controller;
 use Auth;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
-class CustomLogoutController extends Controller
+class AdminLogoutController extends Controller
 {
     public function __invoke()
     {
@@ -15,4 +16,5 @@ class CustomLogoutController extends Controller
             'result' => true,
         ]);
     }
+    //
 }
