@@ -2,6 +2,7 @@
 
 namespace App;
 
+use DB;
 use Illuminate\Database\Eloquent\Model;
 
 class CustomPizzaOrder extends Model
@@ -20,5 +21,12 @@ class CustomPizzaOrder extends Model
     public function usedIngredients()
     {
         return $this->hasMany('App\CustomPizzaOrderDetail', 'custom_pizza_order_id');
+    }
+
+    public function decrementStocks()
+    {
+        DB::transaction(function () {
+            $this->usedIngredients->each->decrementStock();
+        }, 3);
     }
 }

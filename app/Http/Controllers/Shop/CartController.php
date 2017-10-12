@@ -13,10 +13,12 @@ class CartController extends Controller
     {
         $premadePizzas = MyCart::getPremade();
         $customPizzas = MyCart::getCustom();
+
         return view('shop.cart', [
             'premadePizzas' => $premadePizzas,
             'customPizzas' => $customPizzas,
             'total' => $premadePizzas->sum('total_amount') + $customPizzas->sum('total_amount'),
+            'errors' => MyCart::getErrorsFromCustomPizzas(),
         ]);
     }
 

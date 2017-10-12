@@ -3,9 +3,10 @@
 namespace App\Helpers;
 
 use App\IngredientCategory;
-use App\order;
+use App\Order;
 use App\PizzaSize;
 use App\PremadePizzaOrderDetail;
+use DB;
 use Session;
 
 class Cart
@@ -44,13 +45,15 @@ class Cart
             $items = IngredientCategory::select('id', 'description', 'custom_pizza_sequence')
                 ->whereIn('id', $order->pluck('category_id'))
                 ->with(['ingredients' => function ($query) use ($order) {
-                    $query->select('id', 'description', 'ingredient_category_id', 'unit_price')
-                        ->whereIn('id', $order->pluck('items')->flatten());
+                    $query->whereIn('id', $order->pluck('items')->flatten());
                 }])
                 ->get();
 
-            $amount = $items->sum(function ($category) {
-                return $category->ingredients->sum('unit_price');
+            $size = $item['size'];
+
+            $amount = $items->sum(function ($category) use ($size) {
+                $size = strtolower($size);
+                return $category->ingredients->sum("custom_unit_price_{$size}");
             });
 
             return [
@@ -59,7 +62,7 @@ class Cart
                     'ordered_quantity' => $item['quantity'],
                     'unit_price' => $amount,
                     'total_amount' => $item['quantity'] * $amount,
-                    'size' => $item['size'],
+                    'size' => $size,
                 ],
             ];
         });
@@ -93,10 +96,13 @@ class Cart
         $customOrders->when($customOrders->isNotEmpty(), function ($orders) use ($order) {
             $orders->each(function ($pizza) use ($order) {
                 $custom = $order->customPizzaOrder()->create(array_only($pizza, ['size', 'quantity']));
+
                 $ingredients = array_map(function ($id) {
                     return ['ingredient_id' => $id];
                 }, array_flatten(array_column($pizza['item'], 'items')));
+
                 $custom->usedIngredients()->createMany($ingredients);
+                // $custom->decrementStocks();
             });
         });
         return new static;
@@ -209,6 +215,38 @@ class Cart
             return $orders[$key];
         }
         return null;
+    }
+
+    public static function getErrorsFromCustomPizzas()
+    {
+        $errors = [];
+        $custom = self::getCustomOrdersRaw();
+        // $usedIngredients = array_flatten($custom->pluck('item.items'));
+        //
+        $stock = DB::table('ingredients')->get()->pluck(null, 'id');
+
+        $custom->each(function ($pizza, $key) use ($stock, &$errors) {
+            collect($pizza['item'])->each(function ($category) use ($pizza, $stock, &$errors, $key) {
+                collect($category['items'])->each(function ($ingredient) use ($pizza, $stock, &$errors, $key) {
+                    $onHand = $stock->get($ingredient);
+                    $size = strtolower($pizza['size']);
+                    $needed = ($onHand->{"custom_quantity_needed_{$size}"}) * $pizza['quantity'];
+                    if (!$onHand || $onHand->remaining_quantity < $needed) {
+                        $message = "{$onHand->description} out of stock 😭";
+                        // $message = "{$onHand->description} needs: {$needed}, remaining: {$onHand->remaining_quantity}";
+                        if (isset($errors[$key])) {
+                            $errors[$key][] = $message;
+                        } else {
+                            $errors[$key] = [$message];
+                        }
+
+                    }
+                });
+            });
+        });
+
+        return $errors;
+
     }
 
 }

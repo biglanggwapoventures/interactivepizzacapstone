@@ -29,7 +29,19 @@
 											<div class="col-xs-3 nopad text-center">
 												<label class="image-checkbox">
 													<img class="img-responsive" src="{{ $item->photo }}" style=""/>
-													{!! Form::checkbox('choice[]', $item->id, in_array($item->id, array_get($presetItems, $category->id, [])), ['data-category' => $category->id, 'data-description' => $item->description, 'data-price' => $item->unit_price, 'class' => 'choice']) !!}
+													{!! Form::checkbox(
+														'choice[]',
+														$item->id,
+														in_array($item->id, array_get($presetItems, $category->id, [])),
+														[
+															'data-category' => $category->id,
+															'data-description' => $item->description,
+															'data-price' => $item->unit_price,
+															'class' => 'choice',
+															'data-prices' => json_encode($item->customized_prices),
+															'data-quantites' => json_encode($item->customized_quantities)
+														]
+													) !!}
 													<i class="fa fa-check hidden"></i>
 													<p class="text-primary">{{ $item->description }}</p>
 												</label>
@@ -58,7 +70,7 @@
 					@foreach($categories->pluck('description', 'id') AS $id => $label)
 						<li data-id="{{ $id }}" style="margin-bottom:10px;">
 							<span>{{ $label }}</span>
-							<ol>
+							<ol class="ingredient-list">
 
 							</ol>
 						</li>
@@ -67,10 +79,10 @@
 					<li>
 						<div class="row">
 							<div class="col-sm-6">
-								{!! Form::bsText('quantity', 'How many?',array_get($preset, 'quantity'), ['class' => 'form-control quantity text-right']) !!}
+								{!! Form::bsText('quantity', 'How many?', array_get($preset, 'quantity'), ['class' => 'form-control quantity text-right']) !!}
 							</div>
 							<div class="col-sm-6">
-								{!! Form::bsSelect('size', '...and size?', ['' => '** CHOOSE A SIZE ** ', 'SMALL' => 'Small', 'MEDIUM' => 'Medium', 'LARGE' => 'Large'], array_get($preset, 'size')) !!}
+								{!! Form::bsSelect('size', '...and size?', ['SMALL' => 'Small', 'MEDIUM' => 'Medium', 'LARGE' => 'Large'], array_get($preset, 'size')) !!}
 							</div>
 						</div>
 					</li>
@@ -160,7 +172,8 @@
 		var $this = $(this),
 			category = $this.data('category'),
 			value = $this.val(),
-			extras = {itemDescription:$this.data('description'), itemPrice: parseFloat($this.data('price'))};
+			selectedSize = $('#size').val(),
+			extras = {itemDescription:$this.data('description'), itemPrice: parseFloat($this.data('prices')[selectedSize])};
 			// console.log($this.prop('checked'))
 			// console.log('category_id = %s, item_id = %s', category, value);
 		$this.prop('checked')
@@ -172,7 +185,13 @@
 	});
 
 	$(document).ready(function () {
-		$('.choice:checked').trigger('change')
+		$('.choice:checked').trigger('change');
+		$('#size').change(function () {
+			payload = [];
+			totalAmount = 0;
+			$('.ingredient-list').empty();
+			$('.choice:checked').trigger('change');
+		});
 	})
 
 	$('#submit-order').click(submitCustomPizza)

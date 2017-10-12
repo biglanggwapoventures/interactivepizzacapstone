@@ -46,7 +46,7 @@ class OrderPizzaController extends Controller
             $validated = $request->validate([
                 'order_type' => 'required|in:DELIVERY,PICKUP',
                 'recipient' => 'required_if:order_type,PICKUP',
-                'pickup_time' => 'nullable|required_if:order_type,PICKUP|date_format:"h:i A"',
+                'pickup_time' => 'nullable|required_if:order_type,PICKUP|date_format:"H:i"',
                 // 'estimated_delivery_time' => 'nullable|required_if:order_type,DELIVERY|date_format:"h:i A"',
                 'cash_amount' => 'nullable|required_if:order_type,DELIVERY|numeric',
                 'destination_type' => 'nullable|required_if:order_type,DELIVERY|in:CITY_PROPER,OUTSIDE_CITY',
@@ -67,7 +67,7 @@ class OrderPizzaController extends Controller
             if ($order->is('pickup')) {
                 $order->pickup()->create([
                     'recipient' => $validated['recipient'],
-                    'estimated_pickup_time' => Carbon::createFromFormat('h:i A', $validated['pickup_time'])->format('H:i:s'),
+                    'estimated_pickup_time' => Carbon::createFromFormat('H:i', $validated['pickup_time'])->format('H:i:s'),
                 ]);
             } elseif ($order->is('delivery')) {
                 $deliveryDetails = array_only($validated, [

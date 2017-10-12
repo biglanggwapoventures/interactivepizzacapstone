@@ -26,9 +26,15 @@ class IngredientRequest extends FormRequest
     {
         $rules = [
             'description' => ['required', 'max:200'],
-            'unit_price' => 'required|numeric',
+            'unit_price' => 'numeric',
             'ingredient_category_id' => 'required|exists:ingredient_categories,id',
             'photo' => ['image', 'max:5120', 'dimensions:max_width=1024,max_height=1024'],
+            'custom_unit_price_small' => 'required|numeric|min:0',
+            'custom_unit_price_medium' => 'required|numeric|min:0',
+            'custom_unit_price_large' => 'required|numeric|min:0',
+            'custom_quantity_needed_small' => 'required|integer|min:1',
+            'custom_quantity_needed_medium' => 'required|integer|min:1',
+            'custom_quantity_needed_large' => 'required|integer|min:1',
         ];
 
         if ($this->isMethod('patch')) {

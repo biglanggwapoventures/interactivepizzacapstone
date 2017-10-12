@@ -2,6 +2,7 @@
 
 namespace App;
 
+use DB;
 use Illuminate\Database\Eloquent\Model;
 
 class Pizza extends Model
@@ -32,4 +33,17 @@ class Pizza extends Model
         $this->ingredients = $clone->sizes->load('ingredients')->pluck('ingredients')->flatten()->pluck('description', 'id');
         unset($clone);
     }
+
+    public static function getSellableQuantities()
+    {
+        $result = DB::table('pizza_ingredients AS pi')
+            ->select('pi.pizza_size_id')
+            ->addSelect(DB::raw('TRUNCATE(MIN(i.remaining_quantity / pi.quantity), 0) AS total_sellable'))
+            ->join('ingredients AS i', 'i.id', '=', 'pi.ingredient_id')
+            ->groupBy('pi.pizza_size_id')
+            ->get();
+
+        return $result->pluck('total_sellable', 'pizza_size_id');
+    }
+
 }

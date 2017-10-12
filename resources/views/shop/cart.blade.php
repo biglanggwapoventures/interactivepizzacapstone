@@ -35,7 +35,7 @@
 							<tfoot>
 								<tr>
 									<td colspan="5" class="text-right text-info">Amount</td>
-									<td class="text-right">{{ number_format($total, 2) }}</td>
+									<td class="text-right">{{ number_format($total - (floatval($total) * 0.12), 2) }}</td>
 									<td class="active"></td>
 								</tr>
 								<tr>
@@ -46,7 +46,7 @@
 								<tr>
 									<td colspan="5" class="text-right text-info">Total Payable</td>
 									<td class="text-right">
-										<strong class="text-success" style="font-size:15px">{{ number_format((floatval($total) * 0.12) + floatval($total), 2) }}</strong>
+										<strong class="text-success" style="font-size:15px">{{ number_format($total, 2) }}</strong>
 									</td>
 									<td class="active"></td>
 								</tr>
@@ -74,7 +74,14 @@
 								@foreach($customPizzas as $index => $custom)
 									<tr>
 										<td></td>
-										<td class="text-primary">Custom Pizza {{ $loop->iteration }}</td>
+										<td class="text-primary">
+											Custom Pizza {{ $loop->iteration }}
+											@if(isset($errors[$index]))
+												<ul class="text-danger">
+													<li>{!! implode($errors[$index], '</li><li>') !!}</li>
+												</ul>
+											@endif
+										</td>
 										<td>{{ $custom['size'] }}</td>
 										<td class="text-right">{{ number_format($custom['unit_price'], 2) }}</td>
 										<td class="text-right">{{ $custom['ordered_quantity'] }}</td>
@@ -90,8 +97,9 @@
 					</div>
 				</div>
 				<div class="col-sm-4">
-					@if(Auth::check())
+					@if(Auth::check() )
 
+						@if($total > 0)
 						<div class="panel panel-primary">
 							<div class="panel-heading">
 								<h4 class="panel-title">Additional Information</h4>
@@ -99,8 +107,8 @@
 							<div class="panel-body">
 								{!! Form::open(['id' => 'order-form', 'url' => route('shop.do.confirm-order')]) !!}
 									{!! Form::bsSelect('order_type', 'Order Type', ['' => '** SELECT AN ORDER TYPE **', 'PICKUP' => 'Pickup', 'DELIVERY' => 'Delivery']) !!}
-									{!! Form::bsText('recipient', 'Recipient', null, ['data-visible' => 'PICKUP']) !!}
-									{!! Form::bsText('pickup_time', 'Pick Time', null, ['data-visible' => 'PICKUP']) !!}
+									{!! Form::bsText('recipient', 'Recipient', Auth::user()->fullname, ['data-visible' => 'PICKUP']) !!}
+									{!! Form::bsTime('pickup_time', 'Pick Time', null, ['data-visible' => 'PICKUP']) !!}
 
 									<hr>
 									<div class="row">
@@ -117,17 +125,29 @@
 									{!! Form::bsText('barangay', 'Barangay', Auth::user()->profile->barangay, ['data-visible' => 'DELIVERY']) !!}
 									{!! Form::bsText('city', 'City', Auth::user()->profile->city, ['data-visible' => 'DELIVERY']) !!}
 									{!! Form::bsText('landmark', 'Landmark', null, ['data-visible' => 'DELIVERY']) !!}
-									<div class="checkbox">
-										<label>
-											{!! Form::checkbox('agreement', 1, null, ['id' => 'terms-checkbox']) !!}
-											I have read and agreed to the <a data-toggle="modal" data-target="#terms">terms and conditions</a> of {{ config('app.name') }}
-										</label>
-									</div>
 
-									<button type="submit" class="btn btn-default btn-block"><i class="fa fa-check"></i> Confirm Order!</button>
+									@if(count($errors))
+										<div class="alert alert-danger">We are sorry but you cannot continue with the order. Please review the errors displayed in the cart details</div>
+									@else
+										<div class="checkbox">
+											<label>
+												{!! Form::checkbox('agreement', 1, null, ['id' => 'terms-checkbox']) !!}
+												I have read and agreed to the <a data-toggle="modal" data-target="#terms">terms and conditions</a> of {{ config('app.name') }}
+											</label>
+										</div>
+										<button type="submit" class="btn btn-default btn-block"><i class="fa fa-check"></i> Confirm Order!</button>
+									@endif
 								{!! Form::close() !!}
 							</div>
 						</div>
+						@else
+							<div class="alert alert-info text-center">
+								<i class="fa fa-shopping-cart fa-3x"></i>
+								<p class="">
+									Your cart is empty
+								</p>
+							</div>
+						@endif
 
 					@else
 						<div class="well well-sm text-center">
@@ -181,6 +201,7 @@
 
 @push('js')
 	<script type="text/javascript">
+		var errors = @json($errors);
 		$(document).ready(function () {
 			$('select[name=order_type]').change(function () {
 				var $this = $(this),

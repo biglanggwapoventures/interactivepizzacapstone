@@ -16,8 +16,10 @@ class PizzasController extends Controller
      */
     public function index()
     {
+        $stocks = Pizza::getSellableQuantities();
         return view('admin.pizzas.index', [
-            'items' => Pizza::all(),
+            'items' => Pizza::with('sizes')->get(),
+            'stocks' => $stocks,
         ]);
     }
 

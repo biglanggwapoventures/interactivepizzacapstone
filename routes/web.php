@@ -6,7 +6,8 @@ Auth::routes();
 
 Route::group(['prefix' => 'admin', 'namespace' => 'Admin', 'middleware' => 'auth'], function () {
 
-    Route::get('/', 'AdminController');
+    Route::get('/', 'AdminController@index');
+    Route::post('add-item-stock', 'AdminController@addItemStock')->name('admin.add-stock');
 
     Route::resource('ingredients', 'IngredientsController');
     Route::resource('ingredient-categories', 'IngredientCategoriesController');

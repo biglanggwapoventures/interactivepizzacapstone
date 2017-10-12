@@ -31,6 +31,11 @@
             <script>
                 $(document).ready(function () {
                     $('.sidebar-menu').tree()
+                    $.ajaxSetup({
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        }
+                    });
                 })
             </script>
         @endadminpage

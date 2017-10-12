@@ -45,6 +45,11 @@ class OrdersController extends Controller
                     // dd($request->delivery_personnel_id);
                     $order->delivery_personnel_id = $request->delivery_personnel_id;
                 }
+
+                if ($order->isSetTobe('processing')) {
+                    $order->customPizzaOrder->each->decrementStocks();
+                }
+
                 $order->order_status = $request->order_status;
                 $order->save();
                 return redirect()->back();

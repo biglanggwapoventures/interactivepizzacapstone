@@ -20,8 +20,9 @@
 				<tr>
 					<th>Photo</th>
 					<th>Name</th>
-					<th>Description</th>
-					<th>Sizes</th>
+					<th style="width:15%">Description</th>
+					<th>Ingredients</th>
+					<th>STOCK</th>
 					<th></th>
 				</tr>
 
@@ -35,6 +36,13 @@
 						<a class="btn btn-xs btn-primary" href="{{ route('pizza.ingredients.show', ['pizza' => $i->id, 'size' => 'SMALL']) }}">S</a>
 						<a class="btn btn-xs btn-primary" href="{{ route('pizza.ingredients.show', ['pizza' => $i->id, 'size' => 'MEDIUM']) }}">M</a>
 						<a class="btn btn-xs btn-primary" href="{{ route('pizza.ingredients.show', ['pizza' => $i->id, 'size' => 'LARGE']) }}">L</a>
+					</td>
+					<td>
+						<ul class="list-unstyled">
+							@foreach($i->sizes AS $size)
+								<li>{{ "{$size->size}: {$stocks->get($size->id)}" }}</li>
+							@endforeach
+						</ul>
 					</td>
 					<td>
 						<a href="{{ route('pizzas.edit', ['id' => $i->id]) }}" class="btn btn-xs btn-info"><i class="fa fa-pencil"></i> Edit</a>
