@@ -21,6 +21,7 @@
                                 {{ Form::bsText('firstname', 'Firstname', $user->firstname) }}
                                 {{ Form::bsText('lastname', 'Lastname',$user->lastname) }}
                                 {{ Form::bsText('email', 'Email', $user->email) }}
+                                {{ Form::bsText('contact_number', 'Contact number', $user->profile->contact_number) }}
                                 {{ Form::bsText('barangay', 'House # and Barangay', $user->profile->barangay) }}
                                 {{ Form::bsText('street_number', 'Street number', $user->profile->street_number) }}
                                 {{ Form::bsText('city', 'City', $user->profile->city) }}

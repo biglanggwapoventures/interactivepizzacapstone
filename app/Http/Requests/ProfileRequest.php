@@ -27,6 +27,10 @@ class ProfileRequest extends FormRequest
             'firstname' => '|sometimes|required',
             'lastname' => 'sometimes|required',
             'email' => 'sometimes|required|email',
+            'contact_number' => 'required',
+            'street_number' => 'required',
+            'barangay' => 'required',
+            'city' => 'required',
             'old_password' => 'sometimes|required',
             'password' => 'sometimes|required|min:6',
             'password_confirmation' => 'sometimes|required|same:password'

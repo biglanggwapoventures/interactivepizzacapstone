@@ -67,7 +67,7 @@ class CustomerController extends Controller
                 DB::transaction(function () use ($request, $id){
 
                     $user = $request->only('firstname', 'lastname', 'email');
-                    $profile = $request->only('barangay', 'street_number', 'city');
+                    $profile = $request->only('contact_number', 'barangay', 'street_number', 'city');
 
                     $userSync = User::whereId($id)->update($user);
                     Profile::whereUserId($id)->update($profile);
