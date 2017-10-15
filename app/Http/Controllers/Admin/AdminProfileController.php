@@ -1,45 +1,22 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\admin;
 
 use DB;
 use Hash;
 use Auth;
 use App\User;
-use App\Order;
 use App\Profile;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\ProfileRequest;
 
-class CustomerController extends Controller
+class AdminProfileController extends Controller
 {
-    public function showOrderHistory()
-    {
-        $items = Order::owned()->prepForMasterList();
-        return view('shop.customer-order-history', [
-            'items' => $items,
-        ]);
-    }
-
-    public function showOrderDetails($order)
-    {
-        $order = Order::owned()->whereId($order);
-
-        if (!$order->exists()) {
-            abort(404);
-        }
-
-        $order = $order->detailed()->first();
-
-        return view('shop.view-order-details', [
-            'order' => $order,
-        ]);
-    }
-
     public function showProfile()
     {
         $user = User::whereId(Auth::id())->with('profile')->first();
 
-        return view('shop.profile', [
+        return view('admin.profile', [
             'user' => $user
         ]);
     }
@@ -58,9 +35,9 @@ class CustomerController extends Controller
                         'password' => bcrypt($request['password'])
                     ]);
 
-                    return redirect(route('customer.show.profile'))->with('passUpdated', 'Your password has been successfuly updated!');
+                    return redirect(route('admin.show.profile'))->with('passUpdated', 'Your password has been successfuly updated!');
                 }else{
-                    return redirect(route('customer.show.profile'))->with('passFail', "Old password doesn't match your current password.");
+                    return redirect(route('admin.show.profile'))->with('passFail', "Old password doesn't match your current password.");
                 }
                  
             }else{
@@ -74,8 +51,9 @@ class CustomerController extends Controller
 
                 }, 3);
 
-                return redirect(route('customer.show.profile'))->with('profileUpdated', 'Your account has been successfuly updated!');
+                return redirect(route('admin.show.profile'))->with('profileUpdated', 'Your account has been successfuly updated!');
             }
         
     }
+    //
 }
