@@ -4,10 +4,11 @@ Route::get('/', 'ShopController@showHome');
 
 Auth::routes();
 
-Route::group(['prefix' => 'admin', 'namespace' => 'Admin', 'middleware' => 'auth'], function () {
+Route::group(['prefix' => 'admin', 'namespace' => 'Admin', 'middleware' => ['auth', 'admin']], function () {
 
     Route::get('/', 'AdminController@index');
     Route::post('add-item-stock', 'AdminController@addItemStock')->name('admin.add-stock');
+    Route::delete('remove-order/{orderId}', 'AdminController@removeOrder')->name('admin.remove.order');
 
     Route::resource('ingredients', 'IngredientsController');
     Route::resource('ingredient-categories', 'IngredientCategoriesController');
@@ -68,9 +69,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('my-order-history', 'CustomerController@showOrderHistory')->name('customer.show.order-history');
     Route::get('my-order-history/{order}', 'CustomerController@showOrderDetails')->name('customer.show.order-details');
 
-    
     Route::get('my-profile', 'CustomerController@showProfile')->name('customer.show.profile');
-    Route::patch('my-profile/{id}', 'CustomerController@updateProfile')->name('customer.update.profile');
+    Route::patch('my-profile', 'CustomerController@updateProfile')->name('customer.update.profile');
 });
 
 Route::get('session', function () {

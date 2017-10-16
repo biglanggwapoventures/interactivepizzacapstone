@@ -43,18 +43,23 @@ class OrderPizzaController extends Controller
     {
         DB::transaction(function () use ($request) {
 
+            $total = MyCart::getTotal();
+            $minPickup = date_create()->modify('-1 minutes')->format('H:i');
+
             $validated = $request->validate([
                 'order_type' => 'required|in:DELIVERY,PICKUP',
                 'recipient' => 'required_if:order_type,PICKUP',
-                'pickup_time' => 'nullable|required_if:order_type,PICKUP|date_format:"H:i"',
+                'pickup_time' => "nullable|required_if:order_type,PICKUP|date_format:H:i|after:{$minPickup}",
                 // 'estimated_delivery_time' => 'nullable|required_if:order_type,DELIVERY|date_format:"h:i A"',
-                'cash_amount' => 'nullable|required_if:order_type,DELIVERY|numeric',
+                'cash_amount' => "nullable|required_if:order_type,DELIVERY|numeric|min:{$total}",
                 'destination_type' => 'nullable|required_if:order_type,DELIVERY|in:CITY_PROPER,OUTSIDE_CITY',
                 'street' => 'required_if:order_type,DELIVERY',
                 'barangay' => 'required_if:order_type,DELIVERY',
                 'city' => 'required_if:order_type,DELIVERY',
                 'landmark' => 'required_if:order_type,DELIVERY',
                 'agreement' => '',
+            ], [
+                'pickup_time.after' => 'The pickup time is invalid',
             ]);
 
             $order = Order::create([

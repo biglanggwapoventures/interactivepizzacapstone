@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
 {
+    const VAT_VALUE = 0.12;
+
     protected $fillable = [
         'transaction_code',
         'customer_id',
@@ -97,7 +99,9 @@ class Order extends Model
             return $detail->quantity * $detail->usedIngredients->sum('ingredients.unit_price');
         });
 
-        $total = $premadeTotal - ($premadeTotal * 0.12);
+        $grandTotal = $premadeTotal + $customTotal;
+
+        $total = $grandTotal;
 
         $this->total_amount = $total;
 
@@ -111,7 +115,7 @@ class Order extends Model
 
     public function getVAT()
     {
-        return $this->getTotalAmount() * 0.12;
+        return $this->getTotalAmount() * self::VAT_VALUE;
     }
 
     public function scopeDetailed($query)

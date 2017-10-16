@@ -5,20 +5,42 @@ namespace App\Http\Controllers\Admin;
 use App\DeliveryPersonnel;
 use App\Http\Controllers\Controller;
 use App\Order;
+use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Validator;
 
 class OrdersController extends Controller
 {
+
+    protected $criterias = [
+        'customer' => ['customer_id', '='],
+        'start_date' => ['order_date', '>='],
+        'end_date' => ['order_date', '<='],
+        'transaction_code' => ['transaction_code', '='],
+        'type' => ['order_type', '='],
+        'status' => ['order_status', '='],
+    ];
+
     public function masterList(Request $request)
     {
-        $items = Order::prepForMasterList();
+        $orders = Order::select();
+
+        $search = collect($this->criterias)->each(function ($item, $key) use ($orders, $request) {
+            $orders->when($request->has($key) && strlen(trim($request->{$key})), function ($orders) use ($key, $item, $request) {
+                list($column, $operand) = $item;
+                $orders->where($column, $operand, $request->{$key});
+            });
+        });
+
+        $items = $orders->prepForMasterList();
         $deliveryPersonnels = DeliveryPersonnel::toList()->prepend('** PLEASE SELECT A DELIVERY PERSONNEL **', '');
+        $customers = User::standard()->get()->pluck('fullname', 'id')->prepend('** ALL CUSTOMERS **', '');
 
         return view('admin.orders.master-list', [
             'items' => $items,
             'deliveryPersonnels' => $deliveryPersonnels,
+            'customers' => $customers,
         ]);
     }
 
@@ -48,6 +70,7 @@ class OrdersController extends Controller
 
                 if ($order->isSetTobe('processing')) {
                     $order->customPizzaOrder->each->decrementStocks();
+                    $order->premadePizzaOrderDetails->each->decrementStocks();
                 }
 
                 $order->order_status = $request->order_status;

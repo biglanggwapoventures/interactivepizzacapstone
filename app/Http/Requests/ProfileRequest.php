@@ -24,16 +24,16 @@ class ProfileRequest extends FormRequest
     public function rules()
     {
         return [
-            'firstname' => '|sometimes|required',
+            'firstname' => 'sometimes|required',
             'lastname' => 'sometimes|required',
             'email' => 'sometimes|required|email',
-            'contact_number' => 'required',
-            'street_number' => 'required',
-            'barangay' => 'required',
-            'city' => 'required',
+            'contact_number' => 'sometimes|required',
+            'street_number' => 'sometimes|required',
+            'barangay' => 'sometimes|required',
+            'city' => 'sometimes|required',
             'old_password' => 'sometimes|required',
             'password' => 'sometimes|required|min:6',
-            'password_confirmation' => 'sometimes|required|same:password'
+            'password_confirmation' => 'sometimes|required|same:password',
         ];
     }
 }

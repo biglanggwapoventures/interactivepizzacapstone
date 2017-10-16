@@ -26,10 +26,6 @@
 		@endforeach
 	</div>
 
-
-	<pre class="hidden">@php print_r($pizzas->toArray()) @endphp</pre>
-
-
 @endsection
 
 @push('modals')
@@ -82,12 +78,16 @@
 @push('js')
 <script type="text/javascript">
 	$(document).ready(function () {
+
+		var stocks = @json($stocks);
+		// console.log(stocks);
+
 		$('#order-pizza').on('show.bs.modal', function (e) {
 			var $this = $(this),
 				pizza = $(e.relatedTarget).closest('.thumbnail'),
 				sizes = pizza.data('sizes');
 
-			console.log(typeof sizes)
+			// console.log(typeof sizes)
 
 			$this.find('.modal-title').text(pizza.data('name'))
 			$this.find('p.description').text(pizza.data('description'))
@@ -99,7 +99,18 @@
 			$this.find('.order-table tbody').html(function () {
 				var content = '';
 				$.each(sizes, function (i, size) {
-					content += '<tr data-price="'+size.unit_price+'"><td><input type="hidden" name="order['+i+'][pizza_size_id]" value="'+size.id+'">'+size.size+'</td><td class="text-right">'+size.unit_price+'</td><td><input type="number" class="text-right form-control input-sm quantity" name="order['+i+'][quantity]"></td><td class="line-amount text-right">-</td></tr>';
+					var inputElement = '',
+						available = stocks.hasOwnProperty(size.id) ? parseInt(stocks[size.id]) : 0,
+						warning = '';
+					if(available > 0){
+						if(available < 10){
+							warning = '<div>Stocks left: <strong class="text-danger">'+available+'</strong></div>';
+						}
+						inputElement = '<input type="number" step="1" min="1" max="'+stocks[size.id]+'" class="text-right form-control input-sm quantity" name="order['+i+'][quantity]">'+warning;
+					}else{
+						inputElement = '<span class="text-danger">** OUT OF STOCK **</span><input type="hidden" name="order['+i+'][quantity]">';
+					}
+					content += '<tr data-price="'+size.unit_price+'"><td><input type="hidden" name="order['+i+'][pizza_size_id]" value="'+size.id+'">'+size.size+'</td><td class="text-right">'+size.unit_price+'</td><td>'+inputElement+'</td><td class="line-amount text-right">-</td></tr>';
 				});
 				return content;
 			})

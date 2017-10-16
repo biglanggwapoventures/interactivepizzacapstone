@@ -15,7 +15,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'firstname', 'lastname', 'email', 'password', 'login_type', 'banned_at'
+        'firstname', 'lastname', 'email', 'password', 'login_type', 'banned_at',
     ];
 
     /**
@@ -41,8 +41,23 @@ class User extends Authenticatable
         return $this->login_type === 'ADMIN';
     }
 
+    public function is($loginType)
+    {
+        return $loginType === strtolower($this->login_type);
+    }
+
     public function profile()
     {
         return $this->hasOne('App\Profile', 'user_id');
+    }
+
+    public function scopeStandard($query)
+    {
+        return $query->whereLoginType('STANDARD');
+    }
+
+    public function toList()
+    {
+        return $this->get()->pluck('fullname', 'id');
     }
 }

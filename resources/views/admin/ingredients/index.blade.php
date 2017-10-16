@@ -24,7 +24,7 @@
 
 						<tr>
 							<th style="width:50%">Description</th>
-							<th >Remining Quantity</th>
+							<th >Remaining Quantity</th>
 							<th ></th>
 						</tr>
 
@@ -48,7 +48,7 @@
 							<td>{{ number_format($i->remaining_quantity, 2) }}</td>
 							<td class="text-right">
 								<a href="{{ route('ingredients.edit', ['id' => $i->id]) }}" class="btn btn-xs btn-info"><i class="fa fa-pencil"></i> Edit</a>
-								<button type="button" data-toggle="modal" data-target="#add-stock" class="btn btn-xs btn-primary" data-ingredient-id="{{ $i->id }}"><i class="fa fa-plus"></i> Add stock</button>
+								<button type="button" data-toggle="modal" data-target="#add-stock" class="btn btn-xs btn-primary" data-ingredient-id="{{ $i->id }}"><i class="fa fa-plus"></i> Change stock</button>
 								{!! Form::open(['url' => route('ingredients.destroy', ['id' => $i->id]), 'method' => 'DELETE', 'onsubmit' => 'javascript:return confirm(\'Are you sure?\')']) !!}
 									<button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i> Delete</button>
 								{!! Form::close() !!}

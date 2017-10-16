@@ -9,8 +9,8 @@
     <title>Laravel</title>
 
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
-        <link rel="stylesheet" href="{{ asset('css/AdminLTE.min.css') }}">
-        <link rel="stylesheet" href="{{ asset('css/skins/_all-skins.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/AdminLTE.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/skins/_all-skins.min.css') }}">
     @stack('css')
 </head>
 <body class="hold-transition {{ Route::is('login') ? 'login-page' : 'skin-red sidebar-mini fixed' }}">

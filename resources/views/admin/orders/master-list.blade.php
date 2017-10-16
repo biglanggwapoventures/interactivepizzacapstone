@@ -11,9 +11,18 @@
         </ul>
     </div>
 @endif
+{!! Form::open(['url' => route('admin.manage-orders'), 'method' => 'GET', 'class' => 'form-inline']) !!}
+    {!! Form::bsText('transaction_code', 'Transaction Code') !!}
+    {!! Form::bsDate('start_date', 'Start Date') !!}
+    {!! Form::bsDate('end_date', 'End Date') !!}
+    {!! Form::bsSelect('customer', 'Customer', $customers, null, ['id' => 'customer-select2']) !!}
+    {!! Form::bsSelect('type', 'Type', ['' => '** ALL TYPES **', 'DELIVERY' => 'Delivery', 'PICKUP' => 'Pickup']) !!}
+    {!! Form::bsSelect('status', 'Status', ['' => '** ALL ORDERS **', 'PENDING' => 'Pending', 'PROCESSING' => 'Processing', 'DELIVERING' => 'Delivering', 'READY_FOR_PICKUP' => 'Ready for pickup']) !!}
+  <button type="submit" class="btn btn-default">Filter</button>
+{!! Form::close() !!}
 <div class="box">
     <div class="box-body no-padding">
-        <table class="table table-condensed table-striped">
+        <table class="table table-striped">
             <thead>
                 <tr>
                     <th>Transaction Code</th>
@@ -21,6 +30,7 @@
                     <th>Customer</th>
                     <th>Order Type</th>
                     <th class="text-right">Total Amount</th>
+                    <th>Status</th>
                     <th></th>
                 </tr>
 
@@ -46,6 +56,11 @@
                             @endif
 
                         @endif
+                    </td>
+                    <td>
+                        {!! Form::open(['url' => route('admin.remove.order', ['orderId' => $i->id]), 'method' => 'DELETE', 'style' => 'display:inline-block', 'onsubmit' => 'javascript:return confirm(\'Are you sure? This cannot be undone.\')']) !!}
+                            <button type="submit" class="btn btn-danger btn-sm"><i class="fa fa-times"></i></button>
+                        {!!  Form::close() !!}
                     </td>
                 </tr>
             @empty
@@ -80,9 +95,15 @@
 </div>
 @endpush
 
+@push('css')
+    <link rel="stylesheet" href="{{ asset('plugins/select2/css/select2.min.css') }}">
+@endpush
+
 @push('js')
+    <script type="text/javascript" src="{{ asset('plugins/select2/js/select2.full.min.js') }}"></script>
     <script type="text/javascript">
         $(document).ready(function () {
+            $('#customer-select2').select2();
             $('#assign-delivery-personnel-modal').on('show.bs.modal', function (e) {
                 var btn = $(e.relatedTarget),
                     $this = $(this);
