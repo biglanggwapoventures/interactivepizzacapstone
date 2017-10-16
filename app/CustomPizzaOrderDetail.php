@@ -29,7 +29,7 @@ class CustomPizzaOrderDetail extends Model
             ->join('custom_pizza_orders AS cpo', 'cpo.id', '=', 'cpod.custom_pizza_order_id')
             ->where('cpod.id', $this->id)
             ->update([
-                'i.remaining_quantity' => DB::raw('(CASE WHEN cpo.size = "SMALL" THEN i.remaining_quantity - i.custom_quantity_needed_small WHEN cpo.size = "MEDIUM" THEN i.remaining_quantity - i.custom_quantity_needed_medium ELSE i.remaining_quantity - i.custom_quantity_needed_large END)'),
+                'i.remaining_quantity' => DB::raw('(CASE WHEN cpo.size = "SMALL" THEN i.remaining_quantity - (i.custom_quantity_needed_small * cpo.quantity) WHEN cpo.size = "MEDIUM" THEN i.remaining_quantity - (i.custom_quantity_needed_medium * cpo.quantity) ELSE i.remaining_quantity - (i.custom_quantity_needed_large * cpo.quantity) END)'),
             ]);
     }
 }
