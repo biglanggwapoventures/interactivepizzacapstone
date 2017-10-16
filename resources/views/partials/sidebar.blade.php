@@ -21,12 +21,17 @@
             </li>
             <li>
                 <a href="{{ route('ingredients.index') }}">
-                    <i class="fa fa-shopping-cart"></i> <span>Items</span>
+                    <i class="fa fa-shopping-cart"></i> <span>Ingredients</span>
                 </a>
             </li>
             <li>
                 <a href="{{ route('pizzas.index') }}">
                     <i class="fa fa-superpowers"></i> <span>Pizzas</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ route('ingredients.index', ['']) }}">
+                    <i class="fa fa-superpowers"></i> <span>Beverages</span>
                 </a>
             </li>
              <li>

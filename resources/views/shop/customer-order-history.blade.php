@@ -10,10 +10,20 @@
                 <div class="panel-heading">
                     <h4 class="panel-title">View Order History</h4>
                 </div>
+                <div class="panel-body">
+                    {!! Form::open(['url' => route('customer.show.order-history'), 'method' => 'GET', 'class' => 'form-inline']) !!}
+                        {!! Form::bsText('transaction_code', 'Transaction Code') !!}
+                        {!! Form::bsDate('start_date', 'Start Date') !!}
+                        {!! Form::bsDate('end_date', 'End Date') !!}
+                        {!! Form::bsSelect('type', 'Type', ['' => '** ALL TYPES **', 'DELIVERY' => 'Delivery', 'PICKUP' => 'Pickup']) !!}
+                        {!! Form::bsSelect('status', 'Status', ['' => '** ALL ORDERS **', 'PENDING' => 'Pending', 'PROCESSING' => 'Processing', 'DELIVERING' => 'Delivering', 'READY_FOR_PICKUP' => 'Ready for pickup']) !!}
+                      <button type="submit" class="btn btn-default">Filter</button>
+                    {!! Form::close() !!}
+                </div>
                 <table class="table  table-striped">
                     <thead>
 
-                        <tr>
+                        <tr class="active">
                             <th>Transaction Code</th>
                             <th>Order Date</th>
                             <th>Order Type</th>

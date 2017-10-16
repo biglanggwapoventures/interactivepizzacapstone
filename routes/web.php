@@ -4,10 +4,11 @@ Route::get('/', 'ShopController@showHome');
 
 Auth::routes();
 
-Route::group(['prefix' => 'admin', 'namespace' => 'Admin', 'middleware' => 'auth'], function () {
+Route::group(['prefix' => 'admin', 'namespace' => 'Admin', 'middleware' => ['auth', 'admin']], function () {
 
     Route::get('/', 'AdminController@index');
     Route::post('add-item-stock', 'AdminController@addItemStock')->name('admin.add-stock');
+    Route::delete('remove-order/{orderId}', 'AdminController@removeOrder')->name('admin.remove.order');
 
     Route::resource('ingredients', 'IngredientsController');
     Route::resource('ingredient-categories', 'IngredientCategoriesController');

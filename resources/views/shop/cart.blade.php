@@ -97,7 +97,7 @@
 					</div>
 				</div>
 				<div class="col-sm-4">
-					@if(Auth::check() )
+					@if(Auth::check())
 
 						@if($total > 0)
 						<div class="panel panel-primary">
@@ -184,9 +184,6 @@
 					</li>
 					<li>
 						All prices quoted are in Philippine pesos. Price and availabilityinformation is subject to change without notice.
-					</li>
-					<li>
-						Mode of payment are as follows:customers with paypal account can pay through paypal otherwise Cash on Delivery(COD).
 					</li>
 				</ul>
 			</div>

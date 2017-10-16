@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Ingredient;
+use App\Order;
 use Illuminate\Http\Request;
 
 class AdminController extends Controller
@@ -17,7 +18,7 @@ class AdminController extends Controller
     {
         $post = $request->validate([
             'ingredient_id' => 'required|exists:ingredients,id',
-            'quantity' => 'required|integer|min:1',
+            'quantity' => 'required|integer',
         ]);
 
         Ingredient::whereId($post['ingredient_id'])->increment('remaining_quantity', $post['quantity']);
@@ -25,5 +26,11 @@ class AdminController extends Controller
         return response()->json([
             'result' => true,
         ]);
+    }
+
+    public function removeOrder($orderId)
+    {
+        Order::destroy($orderId);
+        return redirect()->back();
     }
 }

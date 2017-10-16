@@ -25,7 +25,12 @@ class CustomLoginController extends Controller
         ]);
 
         if ($validator->passes() && Auth::attempt($request->only(['email', 'password']))) {
-            return redirect(route('shop.show.home'));
+            if (Auth::user()->banned_at) {
+                Auth::logout();
+                $validator->errors()->add('email', 'Account blocked!');
+            } else {
+                return redirect(route('shop.show.home'));
+            }
         } else {
             $validator->errors()->add('password', 'You entered an incorrect password');
         }

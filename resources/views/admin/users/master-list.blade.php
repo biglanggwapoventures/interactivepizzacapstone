@@ -38,16 +38,16 @@
                 @forelse($users AS $u)
                     <tr>
                         <td>{{ $u->fullname }}</td>
-                        <td>{{ $u->profile->contact_number }}</td>
+                        <td>{{ $u->profile->contact_number  }}</td>
                         <td>{{ $u->email }}</td>
-                        <td>{{ $u->profile->street_number }}</td>
-                        <td>{{ $u->profile->barangay }}</td>
-                        <td>{{ $u->profile->city }}</td>
+                        <td>{{ $u->profile->street_number   }}</td>
+                        <td>{{ $u->profile->barangay   }}</td>
+                        <td>{{ $u->profile->city   }}</td>
                         <td>
                             @if($u->banned_at)
                                 {!! Form::open(['url' => route('admin.unban-user', ['id' => $u->id]), 'method' => 'PATCH', 'onsubmit' => 'javascript:return confirm(\'Are you sure?\')']) !!}
                                     <button class="btn btn-xs btn-warning"><i class="fa fa-ban"></i> Unban</button>
-                                {!! Form::close() !!}   
+                                {!! Form::close() !!}
                             @else
                                 {!! Form::open(['url' => route('admin.ban-user', ['id' => $u->id]), 'method' => 'PATCH', 'onsubmit' => 'javascript:return confirm(\'Are you sure?\')']) !!}
                                     <button class="btn btn-xs btn-danger"><i class="fa fa-ban"></i> Ban</button>
@@ -56,14 +56,14 @@
 
                             {!! Form::open(['url' => route('admin.destroy-user', ['id' => $u->id]), 'method' => 'DELETE', 'onsubmit' => 'javascript:return confirm(\'Are you sure?\')']) !!}
                                 <button class="btn btn-xs btn-danger"><i class="fa fa-trash"></i> Delete</button>
-                            {!! Form::close() !!}                            
+                            {!! Form::close() !!}
                         </td>
                     </tr>
-                
+
                 @empty
                     <td colspan="6" class="text-center">There are no recoreded orders</td>
                 @endforelse
-                
+
             </tbody>
         </table>
     </div>
@@ -90,7 +90,7 @@
                 }
 
             })
-            
+
         })
     </script>
 @endpush

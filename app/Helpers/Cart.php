@@ -14,6 +14,11 @@ class Cart
     const CUSTOM_ORDER_KEY = 'custom_orders';
     const ORDER_KEY = 'orders';
 
+    public static function getTotal()
+    {
+        return self::getPremade()->sum('total_amount') + self::getCustom()->sum('total_amount');
+    }
+
     public static function getPremade()
     {
         $data = self::getPremadeOrdersRaw()->pluck('quantity', 'pizza_size_id');

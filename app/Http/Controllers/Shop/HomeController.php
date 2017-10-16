@@ -10,9 +10,11 @@ class HomeController extends Controller
     public function showHome()
     {
         $pizzas = Pizza::has('sizes')->get()->each->getIngredients();
+        $stocks = Pizza::getSellableQuantities();
 
         return view('shop.home', [
             'pizzas' => $pizzas,
+            'stocks' => $stocks,
         ]);
     }
 }
