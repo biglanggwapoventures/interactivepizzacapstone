@@ -96,7 +96,8 @@ class Order extends Model
         });
 
         $customTotal = $this->customPizzaOrder->sum(function ($detail) {
-            return $detail->quantity * $detail->usedIngredients->sum('ingredients.unit_price');
+            $size = strtolower($detail->size);
+            return $detail->quantity * $detail->usedIngredients->sum("ingredients.custom_unit_price_{$size}");
         });
 
         $grandTotal = $premadeTotal + $customTotal;
