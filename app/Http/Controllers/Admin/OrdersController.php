@@ -24,7 +24,7 @@ class OrdersController extends Controller
 
     public function masterList(Request $request)
     {
-        $orders = Order::select();
+        $orders = Order::with('customer');
 
         $search = collect($this->criterias)->each(function ($item, $key) use ($orders, $request) {
             $orders->when($request->has($key) && strlen(trim($request->{$key})), function ($orders) use ($key, $item, $request) {
