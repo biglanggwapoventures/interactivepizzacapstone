@@ -28,6 +28,9 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin', 'middleware' => ['aut
     Route::patch('unban-user/{id}', 'UsersController@unbanUser')->name('admin.unban-user');
     Route::delete('delete-user/{id}', 'UsersController@destroy')->name('admin.destroy-user');
 
+    Route::get('my-profile', 'AdminProfileController@showProfile')->name('admin.show.profile');
+    Route::patch('my-profile/{id}', 'AdminProfileController@updateProfile')->name('admin.update.profile');
+
     Route::post('logout', 'AdminLogoutController')->name('admin.do.logout');
 });
 
@@ -58,11 +61,15 @@ Route::group(['prefix' => 'shop', 'namespace' => 'Shop'], function () {
     Route::post('confirm-order', 'OrderPizzaController@confirmOrder')->name('shop.do.confirm-order');
 
     Route::get('cart', 'CartController@showCart')->name('shop.show.cart');
+
 });
 
 Route::group(['middleware' => 'auth'], function () {
     Route::get('my-order-history', 'CustomerController@showOrderHistory')->name('customer.show.order-history');
     Route::get('my-order-history/{order}', 'CustomerController@showOrderDetails')->name('customer.show.order-details');
+
+    Route::get('my-profile', 'CustomerController@showProfile')->name('customer.show.profile');
+    Route::patch('my-profile', 'CustomerController@updateProfile')->name('customer.update.profile');
 });
 
 Route::get('session', function () {
