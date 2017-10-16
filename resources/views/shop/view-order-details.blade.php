@@ -24,7 +24,7 @@
                         </tr>
                         <tr>
                             <td colspan="3" class="text-right text-success">VAT</td>
-                            <td class="text-right">{{ number_format($order->getVAT() * 0.12, 2) }}</td>
+                            <td class="text-right">{{ number_format($order->getVAT(), 2) }}</td>
                         </tr>
                         <tr>
                             <td colspan="3" class="text-right text-success">Payable Amount</td>
@@ -42,7 +42,7 @@
                         @endforeach
                         @foreach($order->customPizzaOrder AS $custom)
                         <tr>
-                            <td>{{ "Custom Pizza *{$custom->size}" }}</td>
+                            <td >{{ "Custom Pizza *{$custom->size}" }} <a data-toggle="modal" data-target="#custom-pizza-modal-{{ $custom->id }}" class="text-info fa fa-info-circle"></a> </td>
                             @php $unitPrice = $custom->usedIngredients->sum('ingredients.unit_price') @endphp
                             <td class="text-right">{{ number_format($unitPrice, 2) }}</td>
                             <td class="text-right">{{ number_format($custom->quantity, 2) }}</td>
@@ -72,8 +72,10 @@
                             <dd>{{ $order->delivery->landmark }}</dd>
                             <dt>Address</dt>
                             <dd>{{ "{$order->delivery->street}, {$order->delivery->barangay}, {$order->delivery->city}" }}</dd>
-                             <dt>Cash Amount</dt>
+                            <dt>Cash Amount</dt>
                             <dd>{{ number_format($order->delivery->cash_amount, 2) }}</dd>
+                            <dt>Change</dt>
+                            <dd>{{ number_format($order->delivery->cash_amount - $order->total_amount, 2) }}</dd>
                             <dt>Delivery Personnel</dt>
                             <dd>{{ $order->deliveryPersonnel ? $order->deliveryPersonnel->fullname : 'N/A' }}</dd>
                         @elseif($order->is('pickup'))
@@ -89,3 +91,26 @@
         </div>
     </div>
 @endsection
+
+@push('modals')
+    @foreach($order->customPizzaOrder AS $custom)
+    <div class="modal fade" id="custom-pizza-modal-{{ $custom->id }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+      <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">{{ "Custom Pizza *{$custom->size}" }}</h4>
+          </div>
+          <div class="modal-body">
+                <ul>
+                    <li>{!! $custom->usedIngredients->implode('ingredients.description', '</li><li>') !!}</li>
+                </ul>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    @endforeach
+@endpush

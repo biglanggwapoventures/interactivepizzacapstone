@@ -24,7 +24,7 @@
                         </tr>
                         <tr>
                             <td colspan="3" class="text-right text-success">VAT</td>
-                            <td class="text-right">{{ number_format($order->getVAT() * 0.12, 2) }}</td>
+                            <td class="text-right">{{ number_format($order->getVAT(), 2) }}</td>
                         </tr>
                         <tr>
                             <td colspan="3" class="text-right text-success">Payable Amount</td>
@@ -71,8 +71,10 @@
                         <dd>{{ $order->delivery->landmark }}</dd>
                         <dt>Address</dt>
                         <dd>{{ "{$order->delivery->street}, {$order->delivery->barangay}, {$order->delivery->city}" }}</dd>
-                         <dt>Cash Amount</dt>
+                        <dt>Cash Amount</dt>
                         <dd>{{ number_format($order->delivery->cash_amount, 2) }}</dd>
+                        <dt>Change</dt>
+                        <dd>{{ number_format($order->delivery->cash_amount - $order->total_amount, 2) }}</dd>
                         <dt>Delivery Personnel</dt>
                         <dd>{{ $order->deliveryPersonnel ? $order->deliveryPersonnel->fullname : 'N/A' }}</dd>
                     @elseif($order->is('pickup'))

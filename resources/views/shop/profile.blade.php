@@ -4,9 +4,9 @@
 
     <div class="row">
         <div class="col-sm-6 ">
-            {{ Form::model($user, ['url' => route('customer.update.profile', ['id' => auth::id()]), 'method' => 'PATCH']) }}
+            {{ Form::model($user, ['url' => route('customer.update.profile'), 'method' => 'PATCH']) }}
                 <div class="panel panel-primary">
-                    <div class="panel-body"> 
+                    <div class="panel-body">
                         <h3>General Information</h3>
                         <hr>
                         @if($profileUpdated = session('profileUpdated'))
@@ -14,7 +14,7 @@
                                 <p>{{ $profileUpdated }}</p>
                             </div>
                         @endif
-                        <div class="row"> 
+                        <div class="row">
                             <div class="col-sm-12">
                                 {{ Form::bsText('firstname', 'Firstname', $user->firstname) }}
                                 {{ Form::bsText('lastname', 'Lastname',$user->lastname) }}
@@ -34,9 +34,9 @@
         </div>
 
         <div class="col-sm-6">
-            {{ Form::model($user, ['url' => route('customer.update.profile', ['id' => auth::id()]), 'method' => 'PATCH']) }}
+            {{ Form::model($user, ['url' => route('customer.update.profile'), 'method' => 'PATCH']) }}
                 <div class="panel panel-primary">
-                    <div class="panel-body"> 
+                    <div class="panel-body">
                         <h3>Change Password</h3>
                         <hr>
                         @if($passUpdated = session('passUpdated'))
@@ -49,7 +49,7 @@
                                 <p>{{ $passFail }}</p>
                             </div>
                         @endif
-                        <div class="row"> 
+                        <div class="row">
                             <div class="col-sm-12">
                                     {{ Form::bsPassword('old_password', 'Old Password') }}
                                     {{ Form::bsPassword('password', 'New Password') }}
