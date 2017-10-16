@@ -61,6 +61,7 @@ Route::group(['prefix' => 'shop', 'namespace' => 'Shop'], function () {
 
     Route::get('cart', 'CartController@showCart')->name('shop.show.cart');
 
+    Route::get('contact-us', 'ContactUsController@showContactUs')->name('shop.show.contact-us');
 });
 
 Route::group(['middleware' => 'auth'], function () {

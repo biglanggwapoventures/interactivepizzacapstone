@@ -47,6 +47,7 @@
                         </a>
                     </li>
                     <li><a href="{{ route('shop.show.custom-pizza-form') }}"><i class="glyphicon glyphicon-star"></i> Create your own pizza!</a></li>
+                    <li><a href="{{ route('shop.show.contact-us') }}"><i class="glyphicon glyphicon-envelope"></i> Contact us</a></li>
                 </ul>
 
                 <ul class="nav navbar-nav navbar-right">
