@@ -12,9 +12,6 @@
             <button type="submit" class="btn btn-danger btn-block btn-flat">Sign In</button>
         {!! Form::close() !!}
 
-        <hr>
-        <a href="#">I forgot my password</a><br>
-
     </div>
 </div>
 @endsection
