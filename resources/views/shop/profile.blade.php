@@ -17,8 +17,8 @@
                         @endif
                         <div class="row">
                             <div class="col-sm-12">
-                                {{ Form::bsText('firstname', 'Firstname', $user->firstname) }}
-                                {{ Form::bsText('lastname', 'Lastname',$user->lastname) }}
+                                {{ Form::bsText('firstname', 'First name', $user->firstname) }}
+                                {{ Form::bsText('lastname', 'Last name',$user->lastname) }}
                                 {{ Form::bsText('email', 'Email', $user->email) }}
                                 {{ Form::bsText('contact_number', 'Contact number', $user->profile->contact_number) }}
                                 {{ Form::bsText('barangay', 'House # and Barangay', $user->profile->barangay) }}
@@ -55,7 +55,7 @@
                             <div class="col-sm-12">
                                     {{ Form::bsPassword('old_password', 'Old Password') }}
                                     {{ Form::bsPassword('password', 'New Password') }}
-                                    {{ Form::bsPassword('password_confirmation', 'Confirm Password') }}
+                                    {{ Form::bsPassword('password_confirmation', 'Confirm New Password') }}
                             </div>
                         </div>
                     </div>
