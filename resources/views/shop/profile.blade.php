@@ -6,9 +6,10 @@
         <div class="col-sm-6 ">
             {{ Form::model($user, ['url' => route('customer.update.profile'), 'method' => 'PATCH']) }}
                 <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">General Information</h4>
+                    </div>
                     <div class="panel-body">
-                        <h3>General Information</h3>
-                        <hr>
                         @if($profileUpdated = session('profileUpdated'))
                             <div class="alert alert-success">
                                 <p>{{ $profileUpdated }}</p>
@@ -16,8 +17,8 @@
                         @endif
                         <div class="row">
                             <div class="col-sm-12">
-                                {{ Form::bsText('firstname', 'Firstname', $user->firstname) }}
-                                {{ Form::bsText('lastname', 'Lastname',$user->lastname) }}
+                                {{ Form::bsText('firstname', 'First name', $user->firstname) }}
+                                {{ Form::bsText('lastname', 'Last name',$user->lastname) }}
                                 {{ Form::bsText('email', 'Email', $user->email) }}
                                 {{ Form::bsText('contact_number', 'Contact number', $user->profile->contact_number) }}
                                 {{ Form::bsText('barangay', 'House # and Barangay', $user->profile->barangay) }}
@@ -36,9 +37,10 @@
         <div class="col-sm-6">
             {{ Form::model($user, ['url' => route('customer.update.profile'), 'method' => 'PATCH']) }}
                 <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">Change Password</h4>
+                    </div>
                     <div class="panel-body">
-                        <h3>Change Password</h3>
-                        <hr>
                         @if($passUpdated = session('passUpdated'))
                             <div class="alert alert-success">
                                 <p>{{ $passUpdated }}</p>
@@ -53,7 +55,7 @@
                             <div class="col-sm-12">
                                     {{ Form::bsPassword('old_password', 'Old Password') }}
                                     {{ Form::bsPassword('password', 'New Password') }}
-                                    {{ Form::bsPassword('password_confirmation', 'Confirm Password') }}
+                                    {{ Form::bsPassword('password_confirmation', 'Confirm New Password') }}
                             </div>
                         </div>
                     </div>
