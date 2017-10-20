@@ -49,6 +49,14 @@
                             <td class="text-right">{{ number_format($unitPrice * $custom->quantity, 2) }}</td>
                         </tr>
                         @endforeach
+                        @foreach($order->beverages AS $beverage)
+                        <tr>
+                            <td>{{ $beverage->description }}</td>
+                            <td class="text-right">{{ number_format($beverage->unit_price, 2) }}</td>
+                            <td class="text-right">{{ number_format($beverage->pivot->quantity, 2) }}</td>
+                            <td class="text-right">{{ number_format($beverage->unit_price * $beverage->pivot->quantity, 2) }}</td>
+                        </tr>
+                        @endforeach
                     </tbody>
                 </table>
                 <dl class="dl-horizontal">

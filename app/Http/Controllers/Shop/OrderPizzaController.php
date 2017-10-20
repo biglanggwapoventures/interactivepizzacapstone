@@ -90,6 +90,7 @@ class OrderPizzaController extends Controller
             }
             MyCart::savePremadePizzaTo($order);
             MyCart::saveCustomPizzaTo($order);
+            MyCart::saveBeveragesTo($order);
             MyCart::clear();
         });
 

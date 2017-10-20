@@ -100,13 +100,13 @@ class Order extends Model
             return $detail->quantity * $detail->usedIngredients->sum("ingredients.custom_unit_price_{$size}");
         });
 
-        $grandTotal = $premadeTotal + $customTotal;
+        $beveragesTotal = $this->beverages->sum(function ($beverage) {
+            return $beverage->unit_price * $beverage->pivot->quantity;
+        });
 
-        $total = $grandTotal;
+        $this->total_amount = collect([$premadeTotal, $customTotal, $beveragesTotal])->sum();
 
-        $this->total_amount = $total;
-
-        return $total;
+        return $this->total_amount;
     }
 
     public function totalAmountWithoutVAT()
@@ -127,7 +127,7 @@ class Order extends Model
     public function scopePrepForMasterList($query)
     {
         return $query->orderBy('created_at', 'DESC')
-            ->with(['premadePizzaOrderDetails.pizzaSize', 'customPizzaOrder.usedIngredients.ingredients'])
+            ->with(['premadePizzaOrderDetails.pizzaSize', 'customPizzaOrder.usedIngredients.ingredients', 'beverages'])
             ->get()
             ->each
             ->getTotalAmount();
@@ -141,5 +141,10 @@ class Order extends Model
     public function deliveryPersonnel()
     {
         return $this->belongsTo('App\DeliveryPersonnel');
+    }
+
+    public function beverages()
+    {
+        return $this->belongsToMany('App\Beverage', 'ordered_beverages', 'order_id', 'beverage_id')->withPivot('quantity');
     }
 }

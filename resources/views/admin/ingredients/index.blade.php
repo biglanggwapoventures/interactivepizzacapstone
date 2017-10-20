@@ -41,7 +41,6 @@
 									<div class="media-body">
 										<h4 class="media-heading">{{ $i->description }}</h4>
 										<span class="label label-warning"> {{ $i->category->description }}</span>
-										<span class="label label-info"> {{ number_format($i->unit_price, 2) }}</span>
 									</div>
 								</div>
 							</td>

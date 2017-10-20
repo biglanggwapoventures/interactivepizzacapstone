@@ -11,6 +11,7 @@ Route::group(['prefix' => 'admin', 'namespace' => 'Admin', 'middleware' => ['aut
     Route::delete('remove-order/{orderId}', 'AdminController@removeOrder')->name('admin.remove.order');
 
     Route::resource('ingredients', 'IngredientsController');
+    Route::resource('beverages', 'BeveragesController');
     Route::resource('ingredient-categories', 'IngredientCategoriesController');
     Route::resource('pizzas', 'PizzasController');
     Route::resource('delivery-personnel', 'DeliveryPersonnelController');
@@ -57,6 +58,7 @@ Route::group(['prefix' => 'shop', 'namespace' => 'Shop'], function () {
 
     Route::post('cart-update-quantity', 'CartController@updateQuantity')->name('shop.do.cart-update-quantity');
     Route::post('cart-remove-item', 'CartController@removeItem')->name('shop.do.cart-remove-item');
+    Route::post('cart-update-beverages', 'CartController@updateBeverages')->name('shop.do.cart-update-beverages');
 
     Route::post('confirm-order', 'OrderPizzaController@confirmOrder')->name('shop.do.confirm-order');
 

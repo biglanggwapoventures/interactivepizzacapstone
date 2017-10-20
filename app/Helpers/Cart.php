@@ -2,6 +2,7 @@
 
 namespace App\Helpers;
 
+use App\Beverage;
 use App\IngredientCategory;
 use App\Order;
 use App\PizzaSize;
@@ -13,10 +14,28 @@ class Cart
 {
     const CUSTOM_ORDER_KEY = 'custom_orders';
     const ORDER_KEY = 'orders';
+    const BEVERAGE_KEY = 'beverage';
+
+    const VAT = 0.12;
 
     public static function getTotal()
     {
-        return self::getPremade()->sum('total_amount') + self::getCustom()->sum('total_amount');
+        return collect([
+            self::getPremade()->sum('total_amount'),
+            self::getCustom()->sum('total_amount'),
+            self::getBeverages()->sum('amount'),
+        ])->sum();
+    }
+
+    public static function getGrossAmount()
+    {
+        $total = self::getTotal();
+        return $total - self::getVatable();
+    }
+
+    public static function getVatable()
+    {
+        return self::getTotal() * self::VAT;
     }
 
     public static function getPremade()
@@ -169,6 +188,7 @@ class Cart
         return [
             self::CUSTOM_ORDER_KEY => self::getCustomOrdersRaw(),
             self::ORDER_KEY => self::getPremadeOrdersRaw(),
+            self::BEVERAGE_KEY => self::getBeveragesRaw(),
         ];
     }
 
@@ -182,6 +202,8 @@ class Cart
         Session::put(self::CUSTOM_ORDER_KEY, []);
 
         Session::put(self::ORDER_KEY, []);
+
+        Session::put(self::BEVERAGE_KEY, []);
     }
 
     public static function remove($orderType, $id)
@@ -210,7 +232,18 @@ class Cart
 
     private static function getKey($orderType)
     {
-        return $orderType === 'PREMADE' ? self::ORDER_KEY : self::CUSTOM_ORDER_KEY;
+        switch ($orderType) {
+            case 'PREMADE':
+                return self::ORDER_KEY;
+
+            case 'BEVERAGE':
+                return self::BEVERAGE_KEY;
+
+            case 'CUSTOM':
+                return self::CUSTOM_ORDER_KEY;
+        }
+
+        return null;
     }
 
     public static function get($key, $itemType)
@@ -252,6 +285,56 @@ class Cart
 
         return $errors;
 
+    }
+
+    public static function getBeverages()
+    {
+        $beverages = self::getBeveragesRaw();
+
+        if ($beverages->isEmpty()) {
+            return collect();
+        }
+
+        return Beverage::find($beverages->keys())->map(function ($beverage) use ($beverages) {
+            $ordered = $beverages->get($beverage->id);
+            $beverage->ordered_quantity = $ordered['quantity'];
+            $beverage->amount = floatval($beverage->unit_price) * intval($beverage->ordered_quantity);
+            return $beverage;
+        });
+    }
+
+    public static function getBeveragesRaw()
+    {
+        return collect(Session::get(self::BEVERAGE_KEY) ?: []);
+    }
+
+    public static function addBeverage($beverageId, $quantity)
+    {
+        $beverages = Session::get(self::BEVERAGE_KEY);
+
+        if (isset($beverages[$beverageId])) {
+            $beverages[$beverageId]['quantity'] += $quantity;
+        } else {
+            $beverages[$beverageId] = [
+                'quantity' => $quantity,
+                'beverage_id' => $beverageId,
+            ];
+        }
+
+        Session::put(self::BEVERAGE_KEY, $beverages);
+    }
+
+    public static function saveBeveragesTo(Order $order)
+    {
+        $beverages = self::getBeveragesRaw()->mapWithKeys(function ($beverage, $id) {
+            return [
+                $id => [
+                    'quantity' => $beverage['quantity'],
+                ],
+            ];
+        });
+
+        $order->beverages()->attach($beverages);
     }
 
 }

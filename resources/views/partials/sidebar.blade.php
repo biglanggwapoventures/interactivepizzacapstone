@@ -30,8 +30,8 @@
                 </a>
             </li>
             <li>
-                <a href="{{ route('ingredients.index', ['']) }}">
-                    <i class="fa fa-superpowers"></i> <span>Beverages</span>
+                <a href="{{ route('beverages.index') }}">
+                    <i class="fa fa-glass"></i> <span>Beverages</span>
                 </a>
             </li>
              <li>

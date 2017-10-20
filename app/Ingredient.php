@@ -24,6 +24,10 @@ class Ingredient extends Model
         'customized_quantities',
     ];
 
+    protected $casts = [
+        'is_beverage' => 'boolean',
+    ];
+
     public function getCustomizedPricesAttribute()
     {
         return [
@@ -55,5 +59,13 @@ class Ingredient extends Model
     public function getPhotoAttribute($value)
     {
         return asset("storage/{$value}");
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+        // static::addGlobalScope('notBeverage', function (Builder $builder) {
+        //     $builder->whereIsBeverage(0);
+        // });
     }
 }

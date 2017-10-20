@@ -35,18 +35,18 @@
 							<tfoot>
 								<tr>
 									<td colspan="5" class="text-right text-info">Amount</td>
-									<td class="text-right">{{ number_format($total - (floatval($total) * 0.12), 2) }}</td>
+									<td class="text-right">{{ number_format(MyCart::getGrossAmount(), 2) }}</td>
 									<td class="active"></td>
 								</tr>
 								<tr>
 									<td colspan="5" class="text-right text-info">Value Added Tax (12%)</td>
-									<td class="text-right">{{ number_format(floatval($total) * 0.12, 2) }}</td>
+									<td class="text-right">{{ number_format(MyCart::getVatable(), 2) }}</td>
 									<td class="active"></td>
 								</tr>
 								<tr>
 									<td colspan="5" class="text-right text-info">Total Payable</td>
 									<td class="text-right">
-										<strong class="text-success" style="font-size:15px">{{ number_format($total, 2) }}</strong>
+										<strong class="text-success" style="font-size:15px">{{ number_format(MyCart::getTotal(), 2) }}</strong>
 									</td>
 									<td class="active"></td>
 								</tr>
@@ -61,7 +61,7 @@
 										<td>{{ $premade->size }}</td>
 										<td class="text-right">{{ number_format($premade->unit_price, 2) }}</td>
 										<td>
-											{!! Form::text('', $premade->ordered_quantity, ['class' => 'form-control input-sm text-right quantity']) !!}
+											{!! Form::number('', $premade->ordered_quantity, ['class' => 'form-control input-sm text-right quantity']) !!}
 										</td>
 										<!-- <td class="text-right">{{ number_format($premade->ordered_quantity, 2) }}</td> -->
 										<td class="text-right">{{ number_format($premade->total_amount, 2) }}</td>
@@ -92,6 +92,29 @@
 										</td>
 									</tr>
 								@endforeach
+								@foreach($orderedBeverages AS $beverage)
+									<tr>
+										<td class="text-center"><i class="fa fa-glass"></i></td>
+										<td>{{ $beverage->description }}</td>
+										<td>-</td>
+										<td class="text-right">{{ number_format($beverage->unit_price, 2) }}</td>
+										<td>
+											{!! Form::number('', $beverage->ordered_quantity, ['class' => 'form-control input-sm text-right quantity']) !!}
+										</td>
+										<td class="text-right">{{ number_format($beverage->amount, 2) }}</td>
+										<td class="text-center">
+											<button data-id="{{ $beverage->id }}" data-item-type="BEVERAGE" type="button" class="btn btn-success btn-xs save-quantity"><i class="fa fa-check"></i></button>
+											<button data-id="{{ $beverage->id }}" data-item-type="BEVERAGE" type="button" class="btn btn-danger btn-xs remove"><i class="fa fa-times"></i></button>
+										</td>
+									</tr>
+								@endforeach
+								@if($premadePizzas->count() || $customPizzas->count())
+									<tr>
+										<td colspan="7" class="text-right">
+											<button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#beverage-modal"><i class="fa fa-plus"></i> Add beverages</button>
+										</td>
+									</tr>
+								@endif
 							</tbody>
 						</table>
 					</div>
@@ -265,4 +288,49 @@
 			});
 		})
 	</script>
+@endpush
+
+@push('modals')
+<div class="modal fade" id="beverage-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title" id="myModalLabel">Beverages</h4>
+			</div>
+			{!! Form::open(['url' => route('shop.do.cart-update-beverages'), 'method' => 'POST']) !!}
+			<div class="modal-body">
+				<table class="table">
+					<thead>
+						<tr>
+							<th>Item</th>
+							<th class="text-right">Unit Price</th>
+							<th class="text-right">Quantity</th>
+						</tr>
+					</thead>
+					<tbody>
+						@foreach($beverages AS $beverage)
+							<tr>
+								<td>
+									{!! Form::hidden("beverages[{$loop->index}][id]", $beverage->id) !!}
+									{{ $beverage->description }}
+								</td>
+								<td class="text-right">{{ number_format($beverage->unit_price, 2) }}</td>
+								<td>
+									{!! Form::number("beverages[{$loop->index}][quantity]", null, ['class' => 'form-control text-right input-sm', 'min' => 0, 'max' => $beverage->remaining_quantity, 'step' => 1]) !!}
+								</td>
+							</tr>
+						@endforeach
+					</tbody>
+				</table>
+
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				<button type="submit" class="btn btn-primary">Save</button>
+			</div>
+			{!! Form::close() !!}
+		</div>
+	</div>
+</div>
 @endpush

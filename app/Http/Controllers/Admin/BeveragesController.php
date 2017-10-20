@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Beverage;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\IngredientRequest;
-use App\Ingredient;
+use App\Http\Requests\BeverageRequest;
 use Illuminate\Http\Request;
 
-class IngredientsController extends Controller
+class BeveragesController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,8 +16,8 @@ class IngredientsController extends Controller
      */
     public function index()
     {
-        return view('admin.ingredients.index', [
-            'items' => Ingredient::has('category')->with('category')->get(),
+        return view('admin.beverages.index', [
+            'items' => Beverage::get(),
         ]);
     }
 
@@ -28,8 +28,8 @@ class IngredientsController extends Controller
      */
     public function create()
     {
-        return view('admin.ingredients.manage', [
-            'data' => new Ingredient,
+        return view('admin.beverages.manage', [
+            'data' => new Beverage,
         ]);
     }
 
@@ -39,17 +39,12 @@ class IngredientsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(IngredientRequest $request)
+    public function store(BeverageRequest $request)
     {
-        $ingredientPost = array_except($request->validated(), 'photo');
+        $data = array_merge($request->validated(), ['is_beverage' => 1]);
+        Beverage::create($data);
 
-        $ingredientPost['photo'] = $request->file('photo')->store(
-            'ingredients', 'public'
-        );
-
-        Ingredient::create($ingredientPost);
-
-        return redirect(route('ingredients.index'));
+        return redirect(route('beverages.index'));
     }
 
     /**
@@ -69,10 +64,10 @@ class IngredientsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(Ingredient $ingredient)
+    public function edit(Beverage $beverage)
     {
-        return view('admin.ingredients.manage', [
-            'data' => $ingredient,
+        return view('admin.beverages.manage', [
+            'data' => $beverage,
         ]);
     }
 
@@ -83,19 +78,11 @@ class IngredientsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(IngredientRequest $request, $id)
+    public function update(BeverageRequest $request, $id)
     {
-        $ingredientPost = array_except($request->validated(), 'photo');
+        Beverage::whereId($id)->update($request->validated());
 
-        if ($request->has('photo')) {
-            $ingredientPost['photo'] = $request->file('photo')->store(
-                'ingredients', 'public'
-            );
-        }
-
-        Ingredient::whereId($id)->update($ingredientPost);
-
-        return redirect(route('ingredients.index'));
+        return redirect(route('beverages.index'));
     }
 
     /**
@@ -106,8 +93,8 @@ class IngredientsController extends Controller
      */
     public function destroy($id)
     {
-        Ingredient::destroy($id);
+        Beverage::destroy($id);
 
-        return redirect(route('ingredients.index'));
+        return redirect(route('beverages.index'));
     }
 }
