@@ -6,9 +6,10 @@
         <div class="col-sm-6 ">
             {{ Form::model($user, ['url' => route('customer.update.profile'), 'method' => 'PATCH']) }}
                 <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">General Information</h4>
+                    </div>
                     <div class="panel-body">
-                        <h3>General Information</h3>
-                        <hr>
                         @if($profileUpdated = session('profileUpdated'))
                             <div class="alert alert-success">
                                 <p>{{ $profileUpdated }}</p>
@@ -36,9 +37,10 @@
         <div class="col-sm-6">
             {{ Form::model($user, ['url' => route('customer.update.profile'), 'method' => 'PATCH']) }}
                 <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">Change Password</h4>
+                    </div>
                     <div class="panel-body">
-                        <h3>Change Password</h3>
-                        <hr>
                         @if($passUpdated = session('passUpdated'))
                             <div class="alert alert-success">
                                 <p>{{ $passUpdated }}</p>
