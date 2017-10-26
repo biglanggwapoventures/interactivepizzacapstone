@@ -3,6 +3,7 @@
 namespace App;
 
 use Auth;
+use DB;
 use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
@@ -146,5 +147,20 @@ class Order extends Model
     public function beverages()
     {
         return $this->belongsToMany('App\Beverage', 'ordered_beverages', 'order_id', 'beverage_id')->withPivot('quantity');
+    }
+
+    public function decrementBeverageStocks()
+    {
+        $beverages = DB::table('ordered_beverages AS ob')
+            ->where('ob.order_id', '=', $this->id);
+
+        if ($beverages->exists()) {
+            $beverages->join('ingredients AS i', 'i.id', '=', 'ob.beverage_id')
+                ->update([
+                    'i.remaining_quantity' => DB::raw('i.remaining_quantity - ob.quantity'),
+                ]);
+        }
+        return true;
+
     }
 }

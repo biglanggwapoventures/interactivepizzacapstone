@@ -39,7 +39,8 @@
 															'data-price' => $item->unit_price,
 															'class' => 'choice',
 															'data-prices' => json_encode($item->customized_prices),
-															'data-quantites' => json_encode($item->customized_quantities)
+															'data-quantites' => json_encode($item->customized_quantities),
+															'data-once' => $category->custom_pizza_sequence == 1 ? 'yes' : 'no'
 														]
 													) !!}
 													<i class="fa fa-check hidden"></i>
@@ -154,10 +155,20 @@
 
 	// sync the state to the input
 	$(".image-checkbox").on("click", function (e) {
-
+		// e.stopPropagation();/
 		$(this).toggleClass('image-checkbox-checked');
 		var $checkbox = $(this).find('input[type="checkbox"]');
 		$checkbox.prop("checked",!$checkbox.prop("checked")).trigger('change');
+
+		if($(this).find('[type=checkbox]').data('once') == 'yes'){
+			$(this).closest('.tab-pane')
+				.find('.image-checkbox.image-checkbox-checked')
+				.not(this)
+				.removeClass('image-checkbox-checked')
+				.find('input[type="checkbox"]')
+				.prop('checked', false)
+				.trigger('change');
+		}
 
 		e.preventDefault();
 	});
@@ -168,7 +179,6 @@
 	// console.log(typeof totalAmount)
 
 	$('.choice').change(function () {
-
 		var $this = $(this),
 			category = $this.data('category'),
 			value = $this.val(),

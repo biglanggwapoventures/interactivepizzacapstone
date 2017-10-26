@@ -92,8 +92,15 @@ class IngredientCategoriesController extends Controller
      */
     public function destroy($id)
     {
-        IngredientCategory::destroy($id);
+        $exists = \DB::table('ingredients AS i')
+            ->where('i.ingredient_category_id', $id)
+            ->exists();
 
-        return redirect(route('ingredient-categories.index'));
+        if (!$exists) {
+            IngredientCategory::destroy($id);
+            return redirect(route('ingredient-categories.index'));
+        }
+
+        return redirect(route('ingredient-categories.index'))->with('deleteError', 'Cannot delete selected ingredient category because it is still in use!');
     }
 }

@@ -17,6 +17,9 @@
 @section('title', 'Ingredients')
 
 @section('content')
+		@if($message = session('deleteError'))
+			<div class="alert alert-danger"><i class="fa fa-warning"></i> {{ $message }}</div>
+		@endif
 		<div class="box">
 			<div class="box-body no-padding">
 				<table class="table">
@@ -44,7 +47,7 @@
 									</div>
 								</div>
 							</td>
-							<td>{{ number_format($i->remaining_quantity, 2) }}</td>
+							<td>{{ number_format($i->remaining_quantity) }}</td>
 							<td class="text-right">
 								<a href="{{ route('ingredients.edit', ['id' => $i->id]) }}" class="btn btn-xs btn-info"><i class="fa fa-pencil"></i> Edit</a>
 								<button type="button" data-toggle="modal" data-target="#add-stock" class="btn btn-xs btn-primary" data-ingredient-id="{{ $i->id }}"><i class="fa fa-plus"></i> Change stock</button>

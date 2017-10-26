@@ -27,7 +27,7 @@
 							@forelse(Pizza::categorizedIngredients() AS $category)
 								<table class="table table-condensed table-bordered" style="table-layout: fixed">
 									<thead>
-										<tr class="active"><th class="text-primary">{{ strtoupper($category->description) }}</th><th>Quantity</th><th class="text-right">Cost</th></tr>
+										<tr class="active"><th class="text-primary">{{ strtoupper($category->description) }}</th><th>Quantity</th></tr>
 									</thead>
 									<tbody>
 										@forelse($category->ingredients AS $item)
@@ -36,10 +36,7 @@
 													{!! Form::bsCheckbox("item[{$count}][id]", $item->description, $item->id, $ingredients->has($item->id), ['class' => 'item-id']) !!}
 												</td>
 												<td>
-													{!! Form::bsText("item[{$count}][quantity]", null, $ingredients->get($item->id), ['class' => 'form-control input-sm item-quantity']) !!}
-												</td>
-												<td class="text-right">
-													{{ number_format($item->unit_price, 2) }}
+													{!! Form::bsText("item[{$count}][quantity]", null, $ingredients->get($item->id), ['class' => 'form-control input-sm item-quantity text-right']) !!}
 												</td>
 											</tr>
 											@php $count++ @endphp

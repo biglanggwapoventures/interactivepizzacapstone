@@ -106,8 +106,15 @@ class IngredientsController extends Controller
      */
     public function destroy($id)
     {
-        Ingredient::destroy($id);
+        $exists = \DB::table('pizza_ingredients AS pi')
+            ->where('pi.ingredient_id', $id)
+            ->exists();
 
-        return redirect(route('ingredients.index'));
+        if (!$exists) {
+            Ingredient::destroy($id);
+            return redirect(route('ingredients.index'));
+        }
+
+        return redirect(route('ingredients.index'))->with('deleteError', 'Cannot delete selected ingredient because it is still in use!');
     }
 }

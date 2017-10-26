@@ -3,17 +3,19 @@
 @section('title', 'Ingredient Categories')
 
 @section('content')
-
+@if($message = session('deleteError'))
+	<div class="alert alert-danger"><i class="fa fa-warning"></i> {{ $message }}</div>
+@endif
 <div class="box">
 	<div class="box-body no-padding">
 		<table class="table">
 			<thead>
-				
+
 				<tr>
 					<th>Description</th>
 					<th></th>
 				</tr>
-				
+
 			</thead>
 			@forelse($items AS $i)
 				<tr>

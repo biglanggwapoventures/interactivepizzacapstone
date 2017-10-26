@@ -27,7 +27,7 @@ class OrdersController extends Controller
         $orders = Order::with('customer');
 
         $search = collect($this->criterias)->each(function ($item, $key) use ($orders, $request) {
-            $orders->when($request->has($key) && strlen(trim($request->{$key})), function ($orders) use ($key, $item, $request) {
+            $orders->when($request->has($key) && trim($request->{$key}), function ($orders) use ($key, $item, $request) {
                 list($column, $operand) = $item;
                 $orders->where($column, $operand, $request->{$key});
             });
@@ -71,6 +71,7 @@ class OrdersController extends Controller
                 if ($order->isSetTobe('processing')) {
                     $order->customPizzaOrder->each->decrementStocks();
                     $order->premadePizzaOrderDetails->each->decrementStocks();
+                    $order->decrementBeverageStocks();
                 }
 
                 $order->order_status = $request->order_status;

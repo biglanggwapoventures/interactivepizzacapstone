@@ -99,7 +99,7 @@
 										<td>-</td>
 										<td class="text-right">{{ number_format($beverage->unit_price, 2) }}</td>
 										<td>
-											{!! Form::number('', $beverage->ordered_quantity, ['class' => 'form-control input-sm text-right quantity']) !!}
+											{!! Form::number('', $beverage->ordered_quantity, ['class' => 'check-max form-control input-sm text-right quantity', 'data-max' => $beverage->remaining_quantity]) !!}
 										</td>
 										<td class="text-right">{{ number_format($beverage->amount, 2) }}</td>
 										<td class="text-center">
@@ -270,7 +270,16 @@
 				var $this = $(this),
 					itemType = $this.data('item-type'),
 					id = $this.data('id'),
-					quantity = $this.closest('tr').find('input.quantity').val();
+					input = $this.closest('tr').find('input.quantity')
+					quantity = input.val();
+
+				if(input.hasClass('check-max')){
+					var maxValue = parseInt(input.data('max')) || 0;
+					if(maxValue < parseInt(quantity)){
+						alert(input.closest('tr').find('td:eq(1)').text() + ' has '+maxValue + ' remaining!');
+						return;
+					}
+				}
 
 				$this.attr('disabled', 'disabled');
 
@@ -291,6 +300,7 @@
 @endpush
 
 @push('modals')
+
 <div class="modal fade" id="beverage-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
@@ -310,6 +320,9 @@
 					</thead>
 					<tbody>
 						@foreach($beverages AS $beverage)
+							@php
+								$ordered = $orderedBeverages->where('id', $beverage->id)->first();
+							@endphp
 							<tr>
 								<td>
 									{!! Form::hidden("beverages[{$loop->index}][id]", $beverage->id) !!}
@@ -317,7 +330,7 @@
 								</td>
 								<td class="text-right">{{ number_format($beverage->unit_price, 2) }}</td>
 								<td>
-									{!! Form::number("beverages[{$loop->index}][quantity]", null, ['class' => 'form-control text-right input-sm', 'min' => 0, 'max' => $beverage->remaining_quantity, 'step' => 1]) !!}
+									{!! Form::number("beverages[{$loop->index}][quantity]", null, ['class' => 'form-control text-right input-sm', 'min' => 0, 'max' => $beverage->remaining_quantity - ($ordered ? $ordered->ordered_quantity : 0), 'step' => 1]) !!}
 								</td>
 							</tr>
 						@endforeach
