@@ -11,11 +11,20 @@
         </ul>
     </div>
 @endif
+@if($lacking = session('lackingErrors'))
+    <div class="alert alert-danger">
+        <h4>Ooops!</h4>
+        <ul class="list-unstyled">
+            <li>{{ implode($lacking, '</li><li>') }}</li>
+        </ul>
+    </div>
+@endif
 {!! Form::open(['url' => route('admin.manage-orders'), 'method' => 'GET', 'class' => 'form-inline']) !!}
     {!! Form::bsText('transaction_code', 'Transaction Code') !!}
     {!! Form::bsDate('start_date', 'Start Date') !!}
     {!! Form::bsDate('end_date', 'End Date') !!}
     {!! Form::bsSelect('customer', 'Customer', $customers, null, ['id' => 'customer-select2']) !!}
+    {!! Form::bsText('city', 'City') !!}
     {!! Form::bsSelect('type', 'Type', ['' => '** ALL TYPES **', 'DELIVERY' => 'Delivery', 'PICKUP' => 'Pickup']) !!}
     {!! Form::bsSelect('status', 'Status', ['' => '** ALL ORDERS **', 'PENDING' => 'Pending', 'PROCESSING' => 'Processing', 'DELIVERING' => 'Delivering', 'READY_FOR_PICKUP' => 'Ready for pickup']) !!}
   <button type="submit" class="btn btn-default">Filter</button>
@@ -28,6 +37,7 @@
                     <th>Transaction Code</th>
                     <th>Order Date</th>
                     <th>Customer</th>
+                    <th>City</th>
                     <th>Order Type</th>
                     <th class="text-right">Total Amount</th>
                     <th>Status</th>
@@ -40,7 +50,10 @@
                     <td><a href="{{ route('admin.show.order-details', ['orderId' => $i->id]) }}">{{ $i->transaction_code }}</a></td>
                     <td>{{ date_create($i->created_at)->format('m/d/Y h:i A') }}</td>
                     <td>{{ $i->customer->fullname }}</td>
-                    <td>{{ $i->order_type }}</td>
+                    <td>{{ $i->customer->profile->city }}</td>
+                    <td>
+                        {{ $i->order_type }}
+                    </td>
                     <td class="text-right">{{ number_format($i->total_amount, 2) }}</td>
                     <td>{{ $i->order_status }}</td>
                     <td>

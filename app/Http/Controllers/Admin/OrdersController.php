@@ -24,7 +24,14 @@ class OrdersController extends Controller
 
     public function masterList(Request $request)
     {
-        $orders = Order::with('customer');
+        $orders = Order::with('customer.profile');
+
+        $city = $request->city;
+        $orders->when($city, function ($orders) use ($city) {
+            $orders->whereHas('customer.profile', function ($query) use ($city) {
+                $query->where('city', 'like', "%{$city}%");
+            });
+        });
 
         $search = collect($this->criterias)->each(function ($item, $key) use ($orders, $request) {
             $orders->when($request->has($key) && trim($request->{$key}), function ($orders) use ($key, $item, $request) {
@@ -69,6 +76,9 @@ class OrdersController extends Controller
                 }
 
                 if ($order->isSetTobe('processing')) {
+                    if ($lackings = $order->checkAvailability()) {
+                        return redirect()->back()->with('lackingErrors', $lackings);
+                    }
                     $order->customPizzaOrder->each->decrementStocks();
                     $order->premadePizzaOrderDetails->each->decrementStocks();
                     $order->decrementBeverageStocks();

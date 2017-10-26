@@ -163,4 +163,59 @@ class Order extends Model
         return true;
 
     }
+
+    public function checkAvailability()
+    {
+        $ingredients = [];
+        $lacking = [];
+
+        $premade = DB::table('premade_pizza_order_details AS ppod')->whereOrderId($this->id);
+        if ($premade->exists()) {
+
+            $premade = $premade->addSelect(DB::raw('pi.ingredient_id AS id, SUM(pi.quantity * ppod.quantity) AS needed'))
+                ->rightJoin('pizza_ingredients AS pi', 'pi.pizza_size_id', '=', 'ppod.pizza_size_id')
+                ->groupBy('pi.ingredient_id')
+                ->get();
+
+            if ($premade->isNotEmpty()) {
+                $premade->each(function ($item) use (&$ingredients) {
+                    if (isset($ingredients[$item->id])) {
+                        $ingredients[$item->id] += intval($item->needed);
+                    } else {
+                        $ingredients[$item->id] = intval($item->needed);
+                    }
+                });
+            }
+        }
+
+        $custom = DB::table('custom_pizza_orders AS cpo')->whereOrderId($this->id);
+        if ($custom->exists()) {
+            $custom = $custom->addSelect(DB::raw('i.id, SUM(CASE WHEN cpo.size = "SMALL" THEN i.custom_quantity_needed_small * cpo.quantity WHEN cpo.size = "MEDIUM" THEN i.custom_quantity_needed_medium * cpo.quantity ELSE i.custom_quantity_needed_large * cpo.quantity END) AS needed'))
+                ->join('custom_pizza_order_details AS cpod', 'cpod.custom_pizza_order_id', '=', 'cpo.id')
+                ->join('ingredients AS i', 'i.id', '=', 'cpod.ingredient_id')
+                ->groupBy('i.id')
+                ->get();
+
+            if ($custom->isNotEmpty()) {
+                $custom->each(function ($item) use (&$ingredients) {
+                    if (isset($ingredients[$item->id])) {
+                        $ingredients[$item->id] += $item->needed;
+                    } else {
+                        $ingredients[$item->id] = $item->needed;
+                    }
+                });
+            }
+        }
+
+        $stocks = DB::table('ingredients')->select('id', 'remaining_quantity', 'description')->get();
+
+        foreach ($stocks as $stock) {
+            if (isset($ingredients[$stock->id]) && ($offset = intval($stock->remaining_quantity) - intval($ingredients[$stock->id])) < 0) {
+                $lacking[] = "{$stock->description} needs {$ingredients[$stock->id]}, has {$stock->remaining_quantity}";
+            }
+        }
+
+        return $lacking;
+
+    }
 }
