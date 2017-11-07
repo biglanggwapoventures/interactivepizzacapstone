@@ -15,8 +15,11 @@ class UserNotificationsComposer
      */
     public function compose(View $view)
     {
-        $notifications = Auth::user()->notifications();
-        $view->with('unreadNotificationsCount', $notifications->whereIsRead(0)->count());
-        $view->with('notifications', $notifications->get());
+        if (Auth::check()) {
+            $notifications = Auth::user()->notifications();
+            $view->with('unreadNotificationsCount', $notifications->whereIsRead(0)->count());
+            $view->with('notifications', $notifications->get());
+        }
+
     }
 }
