@@ -52,6 +52,27 @@
 
                 <ul class="nav navbar-nav navbar-right">
                     @auth
+                        <li class="top-head-dropdown" >
+                               <a data-toggle="dropdown"  aria-haspopup="true" aria-expanded="false" id="show-notification"><i class="fa fa-globe"></i>
+                                    @if($unreadNotificationsCount > 0)
+                                        <span class="badge">{{ $unreadNotificationsCount }}</span>
+                                    @endif
+                                     <span class="caret"></span>
+                                </a>
+
+                              <ul class="dropdown-menu dropdown-menu-right">
+                                @forelse($notifications AS $notif)
+                                    <li>
+                                      <a href="{{ route('customer.show.order-history') }}" class="top-text-block">
+                                        <div class="top-text-heading">{{ $notif->message }}</div>
+                                        <div class="top-text-light">{{ date_create($notif->created_at)->format('m/d/Y h:i A') }}</div>
+                                      </a>
+                                    </li>
+                                @empty
+                                    <li>No new notifications</li>
+                                @endforelse
+                              </ul>
+                            </li>
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ Auth::user()->fullname }} <span class="caret"></span></a>
                             <ul class="dropdown-menu">
@@ -89,6 +110,13 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
+            $('#show-notification').click(function () {
+                var $this = $(this);
+                $.post("{{ route('customer.clear.notifications') }}")
+                    .done(function () {
+                        $this.find('.badge').remove();
+                    })
+            })
         })
     </script>
     @stack('js')

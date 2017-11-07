@@ -44,7 +44,11 @@ class OrderPizzaController extends Controller
         DB::transaction(function () use ($request) {
 
             $total = MyCart::getTotal();
-            $minPickup = date_create()->modify('-1 minutes')->format('H:i');
+
+            $totalOrderCount = MyCart::pizzaCount();
+
+            $timeOffset = $totalOrderCount < 5 ? '30 minutes' : '1 hour';
+            $minPickup = date_create()->modify("+ {$timeOffset}")->format('H:i');
 
             $validated = $request->validate([
                 'order_type' => 'required|in:DELIVERY,PICKUP',
@@ -59,7 +63,7 @@ class OrderPizzaController extends Controller
                 'landmark' => 'required_if:order_type,DELIVERY',
                 'agreement' => '',
             ], [
-                'pickup_time.after' => 'The pickup time is invalid',
+                'pickup_time.after' => "We are sorry but you need to wait at least {$timeOffset} for your order..",
             ]);
 
             $order = Order::create([

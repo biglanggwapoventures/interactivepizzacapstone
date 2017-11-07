@@ -12,6 +12,11 @@
 
 	<div class="row">
 		<div class="col-md-12">
+			<div class="alert alert-info">
+				<h4><i class="fa fa-bullhorn"></i> Heads Up!</h4>
+				<p>Orders with less than 5 pizzas will take 30 minutes or less. For orders greater than 5 pizzas, 1 hour minimum waiting time is given.</p>
+				<p><button type="button" data-dismiss="alert" aria-label="Close" class="btn btn-info">Ok, got it!</button></p>
+			</div>
 			@include('shop.cart-message')
 			<div class="row">
 				<div class="col-sm-8">
@@ -128,6 +133,7 @@
 								<h4 class="panel-title">Additional Information</h4>
 							</div>
 							<div class="panel-body">
+
 								{!! Form::open(['id' => 'order-form', 'url' => route('shop.do.confirm-order')]) !!}
 									{!! Form::bsSelect('order_type', 'Order Type', ['' => '** SELECT AN ORDER TYPE **', 'PICKUP' => 'Pickup', 'DELIVERY' => 'Delivery']) !!}
 									{!! Form::bsText('recipient', 'Recipient', Auth::user()->fullname, ['data-visible' => 'PICKUP']) !!}

@@ -218,4 +218,13 @@ class Order extends Model
     {
         $query->whereOrderStatus('PENDING');
     }
+
+    public function sendNotification()
+    {
+        return UserNotification::create([
+            'user_id' => $this->customer_id,
+            'message' => "Your order (# {$this->transaction_code}) is now {$this->order_status}",
+            'is_read' => 0,
+        ]);
+    }
 }

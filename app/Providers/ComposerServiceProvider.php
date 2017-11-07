@@ -18,6 +18,9 @@ class ComposerServiceProvider extends ServiceProvider
         View::composer(
             'partials.sidebar', 'App\Http\ViewComposers\PendingOrdersComposer'
         );
+        View::composer(
+            'shop.layout', 'App\Http\ViewComposers\UserNotificationsComposer'
+        );
     }
 
     /**

@@ -107,4 +107,14 @@ class CustomerController extends Controller
         }
 
     }
+
+    public function clearNotifications()
+    {
+        Auth::user()->notifications()->whereIsRead(0)->update([
+            'is_read' => 1,
+        ]);
+        return response()->json([
+            'result' => true,
+        ]);
+    }
 }

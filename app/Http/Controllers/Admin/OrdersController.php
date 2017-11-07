@@ -86,6 +86,7 @@ class OrdersController extends Controller
 
                 $order->order_status = $request->order_status;
                 $order->save();
+                $order->sendNotification();
                 return redirect()->back();
             }
         }

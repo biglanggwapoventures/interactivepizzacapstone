@@ -60,4 +60,14 @@ class User extends Authenticatable
     {
         return $this->get()->pluck('fullname', 'id');
     }
+
+    public function notifications()
+    {
+        return $this->hasMany('App\UserNotification', 'user_id')->orderBy('created_at', 'DESC');
+    }
+
+    public function unreadNotifications()
+    {
+        return $this->notifications()->whereIsRead(0);
+    }
 }

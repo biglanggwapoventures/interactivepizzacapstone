@@ -197,6 +197,11 @@ class Cart
         return self::getPremadeOrdersRaw()->count() + self::getCustomOrdersRaw()->count();
     }
 
+    public static function pizzaCount()
+    {
+        return self::getPremadeOrdersRaw()->sum('quantity') + self::getCustomOrdersRaw()->sum('quantity');
+    }
+
     public static function clear()
     {
         Session::put(self::CUSTOM_ORDER_KEY, []);

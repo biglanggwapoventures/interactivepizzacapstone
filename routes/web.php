@@ -75,6 +75,8 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::get('my-profile', 'CustomerController@showProfile')->name('customer.show.profile');
     Route::patch('my-profile', 'CustomerController@updateProfile')->name('customer.update.profile');
+
+    Route::post('clear-notifications', 'CustomerController@clearNotifications')->name('customer.clear.notifications');
 });
 
 Route::get('session', function () {
