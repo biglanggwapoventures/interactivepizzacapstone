@@ -43,7 +43,13 @@
             <li class="header">Tasks</li>
             <li>
                 <a href="{{ route('admin.manage-orders') }}">
-                    <i class="fa fa-list-alt"></i> <span>Manage Orders</span>
+                    <i class="fa fa-list-alt"></i>
+                    <span id="manage-orders-link">
+                        Manage Orders
+                        @if($pendingCount > 0)
+                            <span class="badge" id="unprocessed-orders-count">{{ $pendingCount }}</span>
+                        @endif
+                    </span>
                 </a>
             </li>
             <li>

@@ -36,7 +36,7 @@
 													{!! Form::bsCheckbox("item[{$count}][id]", $item->description, $item->id, $ingredients->has($item->id), ['class' => 'item-id']) !!}
 												</td>
 												<td>
-													{!! Form::bsText("item[{$count}][quantity]", null, $ingredients->get($item->id), ['class' => 'form-control input-sm item-quantity text-right']) !!}
+													{!! Form::bsText("item[{$count}][quantity]", null, $ingredients->get($item->id) ? $ingredients->get($item->id) : $item->customized_quantities[$selectedSize], ['class' => 'form-control input-sm item-quantity text-right']) !!}
 												</td>
 											</tr>
 											@php $count++ @endphp
@@ -57,7 +57,6 @@
 		</div>
 	</div>
 </div>
-
 @endsection
 
 @push('js')

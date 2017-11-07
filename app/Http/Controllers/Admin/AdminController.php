@@ -33,4 +33,11 @@ class AdminController extends Controller
         Order::destroy($orderId);
         return redirect()->back();
     }
+
+    public function getUnprocessedOrdersCount()
+    {
+        return response()->json([
+            'count' => Order::pending()->count(),
+        ]);
+    }
 }

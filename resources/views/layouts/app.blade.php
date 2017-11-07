@@ -36,6 +36,24 @@
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                         }
                     });
+
+                    function pollUnprocessedOrders () {
+                        $.getJSON("{{ route('admin.poll.unprocessed-orders') }}")
+                            .done(function (res) {
+                                if(parseInt(res.count)){
+                                    if($('#unprocessed-orders-count').length){
+                                        $('#unprocessed-orders-count').text(res.count);
+                                    }else{
+                                        $('#manage-orders-link').append($('<span />', {text: res.count, class: 'badge', id: 'unprocessed-orders-count' }))
+                                    }
+                                }else{
+                                    $('#unprocessed-orders-count').remove();
+                                }
+                                setTimeout(pollUnprocessedOrders, 1000);
+                            });
+                    }
+
+                    pollUnprocessedOrders();
                 })
             </script>
         @endadminpage

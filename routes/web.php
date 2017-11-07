@@ -6,6 +6,8 @@ Auth::routes();
 
 Route::group(['prefix' => 'admin', 'namespace' => 'Admin', 'middleware' => ['auth', 'admin']], function () {
 
+    Route::get('unprocessed-orders', 'AdminController@getUnprocessedOrdersCount')->name('admin.poll.unprocessed-orders');
+
     Route::get('/', 'AdminController@index');
     Route::post('add-item-stock', 'AdminController@addItemStock')->name('admin.add-stock');
     Route::delete('remove-order/{orderId}', 'AdminController@removeOrder')->name('admin.remove.order');

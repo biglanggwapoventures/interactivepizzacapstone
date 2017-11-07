@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\IngredientRequest;
 use App\Ingredient;
+use App\IngredientCategory;
 use Illuminate\Http\Request;
 
 class IngredientsController extends Controller
@@ -14,10 +15,29 @@ class IngredientsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
+        $query = IngredientCategory::query();
+
+        $query->when($request->category_id, function ($query) use ($request) {
+            $query->whereId($request->category_id);
+        });
+
+        $query->when($request->ingredient, function ($query) use ($request) {
+            $query->whereHas('ingredients', function ($q) use ($request) {
+                $q->where('description', 'like', "%{$request->ingredient}%");
+            });
+            $query->with(['ingredients' => function ($q) use ($request) {
+                $q->where('description', 'like', "%{$request->ingredient}%");
+            }]);
+        });
+
+        $query->unless($request->ingredient, function ($query) use ($request) {
+            $query->with('ingredients');
+        });
+
         return view('admin.ingredients.index', [
-            'items' => Ingredient::has('category')->with('category')->get(),
+            'items' => $query->get(),
         ]);
     }
 

@@ -19,7 +19,7 @@ class PizzaHelper
         return IngredientCategory::select('id', 'description')
             ->alphabetized()
             ->with(['ingredients' => function ($q) {
-                $q->select('id', 'description', 'unit_price', 'ingredient_category_id')->alphabetized();
+                $q->select('id', 'description', 'unit_price', 'ingredient_category_id', 'custom_quantity_needed_small', 'custom_quantity_needed_medium', 'custom_quantity_needed_large')->alphabetized();
             }])
             ->get();
     }

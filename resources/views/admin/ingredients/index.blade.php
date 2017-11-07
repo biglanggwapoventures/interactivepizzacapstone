@@ -20,19 +20,22 @@
 		@if($message = session('deleteError'))
 			<div class="alert alert-danger"><i class="fa fa-warning"></i> {{ $message }}</div>
 		@endif
-		<div class="box">
+		{!! Form::open(['url' => route('ingredients.index'), 'method' => 'GET', 'class' => 'form-inline']) !!}
+			{!! Pizza::ingredientCategoryDropdown('category_id', 'Choose a category') !!}
+			{!! Form::bsText('ingredient', 'Ingredient') !!}
+			<button type="submit" class="btn btn-default">Search!</button>
+		{!! Form::close() !!}
+		<div class="box box-solid" style="margin-top:6px;">
 			<div class="box-body no-padding">
 				<table class="table">
-					<thead>
-
-						<tr>
-							<th style="width:50%">Description</th>
-							<th >Remaining Quantity</th>
+					@forelse($items AS $category)
+						<tr class="bg-red">
+							<th style="width:40%"  class="text-uppercase">{{ $category->description }}</th>
+							<th class="text-uppercase text-right">Remaining Quantity</th>
 							<th ></th>
 						</tr>
+						@forelse($category->ingredients AS $i)
 
-					</thead>
-					@forelse($items AS $i)
 						<tr>
 							<td>
 								<div class="media">
@@ -47,7 +50,7 @@
 									</div>
 								</div>
 							</td>
-							<td>{{ number_format($i->remaining_quantity) }}</td>
+							<td class="text-right">{{ number_format($i->remaining_quantity) }}</td>
 							<td class="text-right">
 								<a href="{{ route('ingredients.edit', ['id' => $i->id]) }}" class="btn btn-xs btn-info"><i class="fa fa-pencil"></i> Edit</a>
 								<button type="button" data-toggle="modal" data-target="#add-stock" class="btn btn-xs btn-primary" data-ingredient-id="{{ $i->id }}"><i class="fa fa-plus"></i> Change stock</button>
@@ -56,9 +59,12 @@
 								{!! Form::close() !!}
 							</td>
 						</tr>
+						@empty
+							<td colspan="4">No recorded ingredients</td>
+						@endforelse
 					@empty
 						<tr>
-							<td colspan="4" class="text-center">No recorded ingredients</td>
+							<td colspan="4" class="text-center">No recorded ingredient categories</td>
 						</tr>
 					@endforelse
 				</table>

@@ -173,19 +173,17 @@ class Order extends Model
         if ($premade->exists()) {
 
             $premade = $premade->addSelect(DB::raw('pi.ingredient_id AS id, SUM(pi.quantity * ppod.quantity) AS needed'))
-                ->rightJoin('pizza_ingredients AS pi', 'pi.pizza_size_id', '=', 'ppod.pizza_size_id')
+                ->join('pizza_ingredients AS pi', 'pi.pizza_size_id', '=', 'ppod.pizza_size_id')
                 ->groupBy('pi.ingredient_id')
-                ->get();
-
-            if ($premade->isNotEmpty()) {
-                $premade->each(function ($item) use (&$ingredients) {
+                ->get()
+                ->each(function ($item) use (&$ingredients) {
                     if (isset($ingredients[$item->id])) {
                         $ingredients[$item->id] += intval($item->needed);
                     } else {
                         $ingredients[$item->id] = intval($item->needed);
                     }
                 });
-            }
+
         }
 
         $custom = DB::table('custom_pizza_orders AS cpo')->whereOrderId($this->id);
@@ -194,17 +192,14 @@ class Order extends Model
                 ->join('custom_pizza_order_details AS cpod', 'cpod.custom_pizza_order_id', '=', 'cpo.id')
                 ->join('ingredients AS i', 'i.id', '=', 'cpod.ingredient_id')
                 ->groupBy('i.id')
-                ->get();
-
-            if ($custom->isNotEmpty()) {
-                $custom->each(function ($item) use (&$ingredients) {
+                ->get()
+                ->each(function ($item) use (&$ingredients) {
                     if (isset($ingredients[$item->id])) {
                         $ingredients[$item->id] += $item->needed;
                     } else {
                         $ingredients[$item->id] = $item->needed;
                     }
                 });
-            }
         }
 
         $stocks = DB::table('ingredients')->select('id', 'remaining_quantity', 'description')->get();
@@ -217,5 +212,10 @@ class Order extends Model
 
         return $lacking;
 
+    }
+
+    public function scopePending($query)
+    {
+        $query->whereOrderStatus('PENDING');
     }
 }
