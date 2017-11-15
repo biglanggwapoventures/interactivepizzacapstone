@@ -35,6 +35,7 @@ class PersonnelAPIController extends Controller
     {
         $orders = Order::whereDeliveryPersonnelId($personnelId)
             ->whereOrderStatus('DELIVERING')
+            ->with(['delivery', 'customer'])
             ->prepForMasterList();
 
         return response()->json([
