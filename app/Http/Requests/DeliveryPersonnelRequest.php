@@ -26,6 +26,7 @@ class DeliveryPersonnelRequest extends FormRequest
         return [
             'firstname' => 'required|max:100',
             'lastname' => 'required|max:100',
+            'mobile_number' => 'required|max:20',
             'remarks' => 'max:255',
         ];
     }

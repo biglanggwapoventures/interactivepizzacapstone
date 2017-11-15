@@ -79,6 +79,18 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('clear-notifications', 'CustomerController@clearNotifications')->name('customer.clear.notifications');
 });
 
+Route::group(['prefix' => 'api', 'namespace' => 'API', 'middleware' => 'cors'], function () {
+    Route::group(['prefix' => 'customers'], function () {
+        Route::post('login', 'CustomerAPIController@login');
+        Route::get('{customerId}/history', 'CustomerAPIController@getOrderHistory');
+    });
+
+    Route::group(['prefix' => 'personnels'], function () {
+        Route::post('login', 'PersonnelAPIController@login');
+        Route::get('{personnelId}/deliveries', 'PersonnelAPIController@getOrdersToBeDelivered');
+    });
+});
+
 Route::get('session', function () {
     dd(\MyCart::all());
 });

@@ -18,6 +18,7 @@
 				@endif
 					{!! Form::bsText('firstname', 'First Name') !!}
 					{!! Form::bsText('lastname', 'Last Name') !!}
+					{!! Form::bsText('mobile_number', 'Mobile Number', null, ['placeholder' => 'EG: 09233887588']) !!}
 					{!! Form::bsTextarea('remarks', 'Remarks') !!}
 					{!! Form::submit('Save', ['class' => 'btn btn-success']) !!}
 					<a href="{{ route('delivery-personnel.index') }}" class="btn btn-default">Go back</a>

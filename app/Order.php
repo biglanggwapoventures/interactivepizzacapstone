@@ -128,7 +128,7 @@ class Order extends Model
     public function scopePrepForMasterList($query)
     {
         return $query->orderBy('created_at', 'DESC')
-            ->with(['premadePizzaOrderDetails.pizzaSize', 'customPizzaOrder.usedIngredients.ingredients', 'beverages'])
+            ->with(['premadePizzaOrderDetails.pizzaSize.pizza', 'customPizzaOrder.usedIngredients.ingredients', 'beverages'])
             ->get()
             ->each
             ->getTotalAmount();

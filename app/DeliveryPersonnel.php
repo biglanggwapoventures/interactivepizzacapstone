@@ -9,6 +9,7 @@ class DeliveryPersonnel extends Model
     protected $fillable = [
         'firstname',
         'lastname',
+        'mobile_number',
         'remarks',
     ];
 
